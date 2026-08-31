@@ -8,6 +8,13 @@ const currentRoute = window.location.pathname.split("/").pop() || "index.html";
 const parentRoutes = {
   "experience.html": "index.html",
   "projects.html": "index.html",
+  "project-time-tour.html": "projects.html",
+  "project-bus.html": "projects.html",
+  "project-spring-campaign.html": "projects.html",
+  "project-midyear.html": "projects.html",
+  "project-crossover.html": "projects.html",
+  "project-branch-refresh.html": "projects.html",
+  "project-brand-system.html": "projects.html",
   "portfolio.html": "index.html",
   "writing.html": "portfolio.html",
   "design-hand.html": "portfolio.html",
@@ -114,7 +121,7 @@ function revealPage() {
   if (reduceMotion) return;
   const selectors = body.classList.contains("page-home")
     ? [".folio-header", ".home-lead", ".home-photo", ".home-dossier", ".home-notes > *"]
-    : [".folio-header", ".spread-title > *", ".experience-board > *, .projects-board > *, .portfolio-board > *, .gallery-board > *", ".folio-turn"];
+    : [".folio-header", ".spread-title > *, .project-case-head > *", ".experience-board > *, .projects-board > *, .project-index-grid > *, .project-detail-grid > *, .portfolio-board > *, .gallery-board > *", ".folio-turn"];
   const elements = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector)));
   elements.forEach((element, index) => {
     const horizontal = index % 2 === 0 ? -14 : 14;
@@ -174,7 +181,7 @@ if (finePointer && !reduceMotion) {
     element.addEventListener("pointerleave", () => { element.style.transform = "translate3d(0,0,0)"; });
   });
 
-  document.querySelectorAll(".project-row, .portfolio-board a, .gallery-slot").forEach((element) => {
+  document.querySelectorAll(".project-row, .project-card, .portfolio-board a, .gallery-slot").forEach((element) => {
     element.classList.add("tilt-surface");
     const glow = document.createElement("i");
     glow.className = "surface-glow";
