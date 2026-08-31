@@ -19,6 +19,7 @@ const MIME_TYPES = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".woff2": "font/woff2",
 };
 
 function portIsFree(port) {

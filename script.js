@@ -43,41 +43,20 @@ document.addEventListener("click", (event) => {
   navigateTo(url.href);
 });
 
-document.addEventListener("keydown", (event) => {
-  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-  if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
-  const destination = event.key === "ArrowLeft" ? body.dataset.prev :
-    event.key === "ArrowRight" ? body.dataset.next : null;
-  if (destination) navigateTo(destination);
+// Page changes are deliberately click-only. Browser back/forward—including
+// mouse side buttons—remains native so history behaves exactly as expected.
+window.addEventListener("pageshow", (event) => {
+  if (!event.persisted) return;
+  navigating = false;
+  curtain.getAnimations().forEach((animation) => animation.cancel());
+  curtain.style.transform = "scaleX(0)";
+  const main = document.querySelector("main");
+  main?.getAnimations().forEach((animation) => animation.cancel());
+  if (main) {
+    main.style.opacity = "1";
+    main.style.transform = "none";
+  }
 });
-
-let wheelTotal = 0;
-let wheelReset;
-document.addEventListener("wheel", (event) => {
-  if (event.ctrlKey || navigating) return;
-  event.preventDefault();
-  const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
-  wheelTotal += delta;
-  window.clearTimeout(wheelReset);
-  wheelReset = window.setTimeout(() => { wheelTotal = 0; }, 180);
-  if (Math.abs(wheelTotal) < 90) return;
-  navigateTo(wheelTotal > 0 ? body.dataset.next : body.dataset.prev);
-  wheelTotal = 0;
-}, { passive: false });
-
-let touchStartX = 0;
-let touchStartY = 0;
-document.addEventListener("touchstart", (event) => {
-  touchStartX = event.changedTouches[0].clientX;
-  touchStartY = event.changedTouches[0].clientY;
-}, { passive: true });
-document.addEventListener("touchend", (event) => {
-  const deltaX = event.changedTouches[0].clientX - touchStartX;
-  const deltaY = event.changedTouches[0].clientY - touchStartY;
-  const dominant = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
-  if (Math.abs(dominant) < 58) return;
-  navigateTo(dominant < 0 ? body.dataset.next : body.dataset.prev);
-}, { passive: true });
 
 const routes = [
   ["index.html", "首页"],
@@ -191,17 +170,6 @@ if (finePointer && !reduceMotion) {
     });
   });
 
-  document.querySelectorAll(".home-photo, .accent-photo").forEach((frame) => {
-    const image = frame.querySelector("img");
-    if (!image) return;
-    frame.addEventListener("pointermove", (event) => {
-      const rect = frame.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - .5;
-      const y = (event.clientY - rect.top) / rect.height - .5;
-      image.style.transform = `translate3d(${x * -8}px,${y * -8}px,0)`;
-    });
-    frame.addEventListener("pointerleave", () => { image.style.transform = "translate3d(0,0,0)"; });
-  });
 }
 
 document.addEventListener("pointerdown", (event) => {
