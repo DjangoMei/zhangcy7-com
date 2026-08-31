@@ -10,9 +10,12 @@ const parentRoutes = {
   "projects.html": "index.html",
   "project-time-tour.html": "projects.html",
   "project-bus.html": "projects.html",
+  "project-family.html": "projects.html",
   "project-spring-campaign.html": "projects.html",
   "project-midyear.html": "projects.html",
   "project-crossover.html": "projects.html",
+  "project-dividend.html": "projects.html",
+  "project-parent.html": "projects.html",
   "project-branch-refresh.html": "projects.html",
   "project-brand-system.html": "projects.html",
   "portfolio.html": "index.html",
@@ -150,7 +153,7 @@ function revealPage() {
   if (reduceMotion) return;
   const selectors = body.classList.contains("page-home")
     ? [".folio-header", ".home-lead", ".home-photo", ".home-dossier", ".home-notes > *"]
-    : [".folio-header", ".spread-title > *, .project-case-head > *, .project-index-head > *", ".experience-board > *, .projects-board > *, .project-index-grid > *, .project-magazine-grid > *, .project-detail-grid > *, .portfolio-board > *, .gallery-board > *", ".folio-turn"];
+    : [".folio-header", ".spread-title > *, .project-case-head > *, .project-index-head > *, .case-study-head > *", ".experience-board > *, .projects-board > *, .project-index-grid > *, .project-magazine-grid > *, .project-landscape-grid > *, .project-detail-grid > *, .case-study-board > *, .portfolio-board > *, .gallery-board > *", ".folio-turn"];
   const elements = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector)));
   elements.forEach((element, index) => {
     element.animate(
