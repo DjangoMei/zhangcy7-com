@@ -4,6 +4,18 @@ if (year) year.textContent = new Date().getFullYear();
 const body = document.body;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = window.matchMedia("(pointer: fine)").matches;
+const currentRoute = window.location.pathname.split("/").pop() || "index.html";
+const parentRoutes = {
+  "experience.html": "index.html",
+  "projects.html": "index.html",
+  "portfolio.html": "index.html",
+  "writing.html": "portfolio.html",
+  "design-hand.html": "portfolio.html",
+  "design-ai.html": "portfolio.html",
+  "video.html": "portfolio.html",
+  "other.html": "portfolio.html"
+};
+const semanticParent = parentRoutes[currentRoute] || null;
 let navigating = false;
 
 const curtain = document.createElement("div");
@@ -11,12 +23,13 @@ curtain.className = "page-curtain";
 curtain.setAttribute("aria-hidden", "true");
 body.append(curtain);
 
-function navigateTo(destination) {
+function navigateTo(destination, { replace = false } = {}) {
   if (!destination || navigating) return;
   navigating = true;
 
   if (reduceMotion) {
-    window.location.href = destination;
+    if (replace) window.location.replace(destination);
+    else window.location.href = destination;
     return;
   }
 
@@ -28,7 +41,10 @@ function navigateTo(destination) {
     [{ opacity: 1, transform: "scale(1)" }, { opacity: .64, transform: "scale(.992)" }],
     { duration: 400, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }
   );
-  window.setTimeout(() => { window.location.href = destination; }, 400);
+  window.setTimeout(() => {
+    if (replace) window.location.replace(destination);
+    else window.location.href = destination;
+  }, 400);
 }
 
 document.addEventListener("click", (event) => {
@@ -43,8 +59,20 @@ document.addEventListener("click", (event) => {
   navigateTo(url.href);
 });
 
-// Page changes are deliberately click-only. Browser back/forward—including
-// mouse side buttons—remains native so history behaves exactly as expected.
+// Each non-root page owns one same-URL history guard. A native browser-back
+// action (including a mouse side button) first reaches that guard, then routes
+// to the page's semantic parent rather than the last visited sibling page.
+const historyMarker = `zcy:${currentRoute}`;
+if (semanticParent && history.state?.semanticGuard !== historyMarker) {
+  history.replaceState({ semanticBase: historyMarker }, "", window.location.href);
+  history.pushState({ semanticGuard: historyMarker }, "", window.location.href);
+}
+
+window.addEventListener("popstate", (event) => {
+  if (!semanticParent || event.state?.semanticBase !== historyMarker) return;
+  navigateTo(semanticParent, { replace: true });
+});
+
 window.addEventListener("pageshow", (event) => {
   if (!event.persisted) return;
   navigating = false;
@@ -69,7 +97,6 @@ const routes = [
   ["video.html", "视频作品"],
   ["other.html", "其他作品"]
 ];
-const currentRoute = window.location.pathname.split("/").pop() || "index.html";
 const rail = document.createElement("nav");
 rail.className = "page-rail";
 rail.setAttribute("aria-label", "页面目录");
