@@ -20,6 +20,21 @@
 
   const pad = (value) => String(value).padStart(2, "0");
 
+  function setSemanticTitle(heading, text) {
+    const parts = text
+      .replace(/\s*\|\s*/g, "｜\n")
+      .replace(/([，！])\s*/g, "$1\n")
+      .split(/\s+|\n+/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+    heading.classList.add("semantic-title");
+    parts.forEach((part) => {
+      const phrase = document.createElement("span");
+      phrase.textContent = part;
+      heading.append(phrase);
+    });
+  }
+
   function updateProgress() {
     if (!activeScroller || activeScroller.classList.contains("is-pdf")) {
       progress.style.transform = "scaleX(1)";
@@ -45,7 +60,7 @@
       scroller.classList.add("is-pdf");
       const frame = document.createElement("iframe");
       frame.className = "writing-pdf-frame";
-      frame.src = `${entry.download}#toolbar=0&navpanes=0&view=FitH`;
+      frame.src = `${entry.download}#toolbar=0&navpanes=0&view=Fit`;
       frame.title = `${entry.title} PDF 滚动预览`;
       frame.loading = "eager";
       scroller.append(frame);
@@ -57,7 +72,8 @@
     entry.blocks.forEach((block, index) => {
       if (block.type === "heading") {
         const heading = document.createElement(index === 0 ? "h1" : "h2");
-        heading.textContent = block.text;
+        if (index === 0) setSemanticTitle(heading, block.text);
+        else heading.textContent = block.text;
         article.append(heading);
       } else if (block.type === "paragraph") {
         const paragraph = document.createElement("p");
@@ -88,6 +104,10 @@
         const image = document.createElement("img");
         image.src = source;
         image.alt = `${entry.title} ${pad(index + 1)}`;
+        if (entry.sizes?.[index]) {
+          image.width = entry.sizes[index][0];
+          image.height = entry.sizes[index][1];
+        }
         image.loading = "eager";
         figure.append(image);
         triptych.append(figure);
@@ -101,6 +121,10 @@
     const image = document.createElement("img");
     image.src = entry.src;
     image.alt = entry.title;
+    if (entry.width && entry.height) {
+      image.width = entry.width;
+      image.height = entry.height;
+    }
     image.loading = "eager";
     figure.append(image);
     scroller.append(figure);

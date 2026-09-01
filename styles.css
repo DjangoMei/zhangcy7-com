@@ -755,8 +755,8 @@ img { display: block; max-width: 100%; }
 .spread-stage { width:calc(100% - 3rem); height:calc(100vh - 58px); height:calc(100svh - 58px); margin:0 auto; display:grid; grid-template-rows:clamp(82px,13.5vh,118px) minmax(0,1fr) 38px; gap:clamp(.5rem,1.2vh,.8rem); overflow:hidden; }
 .spread-title { display:grid; grid-template-columns:1.15fr 1fr auto; gap:clamp(1rem,4vw,4.5rem); align-items:end; padding:clamp(.55rem,1.4vh,1rem) 0; border-bottom:1px solid var(--folio-rule); }
 .spread-title div>span { color:#566b5e; font-size:.56rem; font-weight:800; letter-spacing:.18em; }
-.spread-title h1 { margin:.05rem 0 0; font-family:"Songti SC",STSong,"Noto Serif SC",Georgia,serif; font-size:clamp(2.7rem,5.2vw,5.7rem); font-weight:400; letter-spacing:-.09em; line-height:.82; }
-.spread-title>p { max-width:32rem; margin:0; color:rgba(24,32,28,.62); font-family:"Songti SC",STSong,Georgia,serif; font-size:clamp(.7rem,.86vw,.88rem); line-height:1.65; }
+.spread-title h1 { margin:.05rem 0 0; font-family:var(--display-zh); font-size:clamp(2.7rem,5.2vw,5.7rem); font-weight:400; letter-spacing:-.09em; line-height:.82; }
+.spread-title>p { max-width:32rem; margin:0; color:rgba(24,32,28,.62); font-family:var(--body-zh); font-size:clamp(.7rem,.86vw,.88rem); line-height:1.65; }
 .spread-title>b { font-family:"Bodoni 72",Didot,Georgia,serif; font-size:.72rem; letter-spacing:.14em; }
 .folio-turn { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-top:1px solid var(--folio-ink); font-size:.63rem; }
 .folio-turn a { font-weight:700; text-decoration:none; }
@@ -793,7 +793,7 @@ img { display: block; max-width: 100%; }
 .projects-board { min-height:0; display:grid; grid-template-columns:minmax(300px,1.22fr) minmax(290px,.86fr) minmax(110px,.34fr); gap:clamp(.55rem,1vw,.9rem); }
 .project-lead { min-height:0; display:flex; flex-direction:column; justify-content:center; padding:clamp(1rem,2.7vw,3rem); background:#1d2521; color:#f4f2eb; overflow:hidden; }
 .project-top { display:flex; justify-content:space-between; gap:1rem; font-size:.53rem; font-weight:700; letter-spacing:.13em; }
-.project-lead h2 { margin:clamp(.6rem,2vh,1.3rem) 0; font-family:"Songti SC",STSong,Georgia,serif; font-size:clamp(2rem,4vw,4.4rem); font-weight:400; letter-spacing:-.05em; line-height:1.02; }
+.project-lead h2 { margin:clamp(.6rem,2vh,1.3rem) 0; font-family:var(--display-zh); font-size:clamp(2rem,4vw,4.4rem); font-weight:400; letter-spacing:-.05em; line-height:1.02; }
 .project-lead>p { max-width:35rem; margin:0; color:rgba(255,255,255,.62); font-size:clamp(.65rem,.78vw,.8rem); line-height:1.75; }
 .project-lead dl { display:grid; grid-template-columns:repeat(3,1fr); margin:auto 0 0; padding-top:.7rem; border-top:1px solid rgba(255,255,255,.2); }
 .project-lead dl div { padding-right:.5rem; }
@@ -803,16 +803,16 @@ img { display: block; max-width: 100%; }
 .project-row { display:grid; grid-template-columns:1fr auto; align-content:center; padding:clamp(.65rem,1.4vw,1.3rem); overflow:hidden; }
 .project-row.purple { background:var(--folio-purple); }.project-row.green { background:var(--folio-green); }.project-row.blue { background:var(--folio-blue); }
 .project-row>span { grid-column:1 / 3; font-size:.5rem; font-weight:800; letter-spacing:.13em; }
-.project-row h3 { margin:.25rem 0; font-family:"Songti SC",STSong,Georgia,serif; font-size:clamp(.9rem,1.3vw,1.35rem); }
+.project-row h3 { margin:.25rem 0; font-family:var(--display-zh); font-size:clamp(.9rem,1.3vw,1.35rem); }
 .project-row p { grid-column:1; margin:0; color:rgba(24,32,28,.62); font-size:clamp(.55rem,.66vw,.68rem); line-height:1.45; }
-.project-row strong { grid-row:2 / 4; grid-column:2; align-self:end; margin-left:.7rem; font-family:"Songti SC",STSong,Georgia,serif; font-size:clamp(.68rem,.85vw,.88rem); white-space:nowrap; writing-mode:vertical-rl; }
+.project-row strong { grid-row:2 / 4; grid-column:2; align-self:end; margin-left:.7rem; font-family:var(--body-zh); font-size:clamp(.68rem,.85vw,.88rem); white-space:nowrap; writing-mode:vertical-rl; }
 .project-accent img { object-position:center 45%; }
 
 .portfolio-board { min-height:0; display:grid; grid-template-columns:minmax(220px,1.12fr) repeat(2,minmax(180px,1fr)) minmax(105px,.33fr); grid-template-rows:1fr 1fr; gap:.65rem; }
 .portfolio-board a { position:relative; display:flex; min-height:0; flex-direction:column; justify-content:space-between; padding:clamp(.75rem,1.6vw,1.5rem); overflow:hidden; color:inherit; text-decoration:none; }
 .portfolio-board a::after { position:absolute; top:-4rem; right:-3rem; width:10rem; aspect-ratio:1; border:1px solid rgba(24,32,28,.17); border-radius:50%; content:""; }
 .portfolio-board a>span { font-size:.5rem; font-weight:800; letter-spacing:.14em; }
-.portfolio-board h2 { margin:0; font-family:"Songti SC",STSong,Georgia,serif; font-size:clamp(1.25rem,2.25vw,2.5rem); font-weight:400; letter-spacing:-.04em; line-height:1; }
+.portfolio-board h2 { margin:0; font-family:var(--display-zh); font-size:clamp(1.25rem,2.25vw,2.5rem); font-weight:400; letter-spacing:-.04em; line-height:1; }
 .portfolio-board h2 i { font-family:"Bodoni 72",Didot,Georgia,serif; font-weight:400; }
 .portfolio-board p { margin:.35rem 0 0; color:rgba(24,32,28,.58); font-size:.58rem; }
 .portfolio-board a>b { align-self:end; font-size:.82rem; }
@@ -828,7 +828,7 @@ img { display: block; max-width: 100%; }
 .gallery-statement::before { position:absolute; top:-15%; right:-25%; width:85%; aspect-ratio:1; border:1px solid var(--folio-rule); border-radius:50%; content:""; }
 .gallery-statement>span { margin-bottom:auto; font-size:.55rem; font-weight:800; letter-spacing:.17em; }
 .gallery-statement h2 { margin:0; font-family:"Bodoni 72",Didot,Georgia,serif; font-size:clamp(2.8rem,5vw,5.8rem); font-weight:400; letter-spacing:-.055em; line-height:.82; }
-.gallery-statement p { max-width:22rem; margin:.8rem 0 0; color:rgba(24,32,28,.62); font-family:"Songti SC",STSong,serif; font-size:clamp(.62rem,.75vw,.76rem); line-height:1.55; }
+.gallery-statement p { max-width:22rem; margin:.8rem 0 0; color:rgba(24,32,28,.62); font-family:var(--body-zh); font-size:clamp(.62rem,.75vw,.76rem); line-height:1.55; }
 .gallery-slot { position:relative; display:flex; min-height:0; flex-direction:column; padding:clamp(.75rem,1.5vw,1.4rem); border:1px solid var(--folio-rule); overflow:hidden; }
 .gallery-slot::after { position:absolute; inset:18% 10% 22%; border:1px dashed rgba(24,32,28,.15); content:""; }
 .gallery-slot>span,.gallery-slot>strong,.gallery-slot>small { position:relative; z-index:1; }
@@ -892,6 +892,7 @@ img { display: block; max-width: 100%; }
   --luxury-ease: cubic-bezier(.22, 1, .36, 1);
   --soft-shadow: 0 18px 54px rgba(24, 32, 28, .075), 0 2px 8px rgba(24, 32, 28, .045);
   --display-zh: "ZCY XiaoWei", "ZCOOL XiaoWei", "STKaiti", "KaiTi", serif;
+  --body-zh: "ZCY XiaoWei", "ZCOOL XiaoWei", "STKaiti", "KaiTi", serif;
   --mx: 50vw;
   --my: 50vh;
   isolation: isolate;
@@ -2996,4 +2997,115 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
   .triptych-scroll { padding:.3rem; }
   .glass-triptych { gap:.24rem; padding:.3rem; border-radius:6px; }
   .glass-triptych figure { border-radius:3px; }
+}
+
+/* Portfolio fit and type correction: clean UI copy, readable text, uncropped art. */
+.workroom-head { grid-template-columns:minmax(0,1fr) auto; }
+
+.image-scroll.is-long figure { width:min(64%,720px); }
+.writing-scroll.is-pdf {
+  display:grid;
+  place-items:center;
+  padding:clamp(.55rem,1vw,.9rem);
+}
+.writing-pdf-frame {
+  width:min(78%,940px);
+  height:calc(100% - .3rem);
+}
+
+.writing-page .workroom-display {
+  --reading-sans:"Microsoft YaHei","PingFang SC","Noto Sans SC","Helvetica Neue",Arial,sans-serif;
+  color:#080908;
+  font-family:var(--reading-sans);
+}
+.writing-page .workroom-display-head,
+.writing-page .workroom-display-head small,
+.writing-page .workroom-display-head h2,
+.writing-page .workroom-display-head > strong,
+.writing-page .workroom-loading,
+.writing-page .workroom-error,
+.writing-page .workroom-controls,
+.writing-page .workroom-controls button,
+.writing-page .writing-paper,
+.writing-page .writing-paper h1,
+.writing-page .writing-paper h2,
+.writing-page .writing-paper p {
+  color:#080908;
+  font-family:var(--reading-sans);
+}
+.writing-page .workroom-display-head small { font-size:clamp(.42rem,.48vw,.5rem); }
+.writing-page .workroom-display-head h2 { font-size:clamp(.98rem,1.35vw,1.42rem); font-weight:600; }
+.writing-page .workroom-display-head > strong { font-size:clamp(.5rem,.58vw,.62rem); }
+.writing-page .writing-paper { width:min(88%,860px); }
+.writing-page .writing-paper h1 {
+  font-size:clamp(1.8rem,2.8vw,3rem);
+  font-weight:700;
+  letter-spacing:-.035em;
+}
+.writing-page .writing-paper h2 {
+  font-size:clamp(1.08rem,1.45vw,1.5rem);
+  font-weight:700;
+}
+.writing-page .writing-paper p {
+  font-size:clamp(.9rem,1vw,1.04rem);
+  font-weight:400;
+  line-height:1.9;
+}
+
+.glass-triptych figure {
+  padding:clamp(.2rem,.4vw,.42rem);
+  overflow:visible;
+}
+.glass-triptych img {
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  transform:none;
+}
+.glass-triptych figure:hover img { transform:none; }
+
+@media (max-width:760px) {
+  .image-scroll.is-long figure { width:min(78%,620px); }
+  .writing-pdf-frame { width:88%; }
+  .writing-page .writing-paper { width:94%; }
+  .writing-page .writing-paper h1 { font-size:1.15rem; }
+  .writing-page .writing-paper h2 { font-size:.78rem; }
+  .writing-page .writing-paper p { font-size:.68rem; line-height:1.82; }
+}
+
+/* One typeface for the complete portfolio UI; the writing canvas remains sans-serif. */
+.portfolio-gallery-page .workroom-head *,
+.portfolio-gallery-page .workroom-sidebar *,
+.portfolio-gallery-page .workroom-display-head *,
+.portfolio-gallery-page .workroom-controls * {
+  font-family:var(--display-zh);
+}
+.writing-page .workroom-display,
+.writing-page .workroom-display * {
+  font-family:var(--reading-sans);
+}
+.writing-paper h1.semantic-title {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:.08em .38em;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  text-wrap:wrap;
+}
+.writing-paper h1.semantic-title span {
+  display:inline-block;
+  white-space:nowrap;
+}
+
+/* Final portfolio typography lock: no mixed Song/Kai UI glyphs. */
+.portfolio-index-page *,
+.portfolio-gallery-page * {
+  font-family:var(--display-zh) !important;
+}
+.writing-page .workroom-display,
+.writing-page .workroom-display * {
+  font-family:var(--reading-sans) !important;
 }
