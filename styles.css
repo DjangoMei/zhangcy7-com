@@ -403,7 +403,7 @@ img { display: block; max-width: 100%; }
 }
 
 /* 2026 editorial redesign */
-.redesign { --folio-paper:#edece6; --folio-ink:#18201c; --folio-green:#aab6a4; --folio-blue:#a8b5c1; --folio-purple:#b1a7ba; --folio-rule:rgba(24,32,28,.24); --body-zh:"Songti SC",STSong,"Noto Serif SC",Georgia,serif; width:100%; height:100vh; height:100svh; overflow:hidden; color:var(--folio-ink); background:var(--folio-paper); font-family:var(--body-zh); }
+.redesign { --folio-paper:#edece6; --folio-ink:#18201c; --folio-green:#aab6a4; --folio-blue:#a8b5c1; --folio-purple:#b1a7ba; --folio-rule:rgba(24,32,28,.24); --body-zh:"Songti SC",STSong,SimSun,"NSimSun","Noto Serif SC",Georgia,serif; width:100%; height:100vh; height:100svh; overflow:hidden; color:var(--folio-ink); background:var(--folio-paper); font-family:var(--body-zh); }
 .redesign .folio-header { width:calc(100% - 3rem); height:58px; margin:0 auto; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; border-bottom:1px solid var(--folio-ink); }
 .folio-brand { display:inline-flex; width:max-content; align-items:baseline; gap:.75rem; text-decoration:none; }
 .folio-brand strong { font-family:"Bodoni 72",Didot,Georgia,serif; font-size:1.45rem; font-style:italic; letter-spacing:-.06em; }
@@ -2275,7 +2275,10 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
 .project-card--family figure img { object-position:center 58%; }
 .project-card--midyear figure img { object-position:center 52%; }
 .project-card--crossover figure img { object-position:center 55%; }
-.project-card--dividend figure img { object-position:center 58%; }
+.project-card--dividend figure img {
+  object-position:left center;
+  transform-origin:left center;
+}
 .project-card--parent figure img { object-position:center; }
 .project-card-title {
   position:absolute;
@@ -2743,6 +2746,7 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
   border:1px solid rgba(24,32,28,.18);
   background:#fbfaf6;
   box-shadow:0 24px 54px rgba(24,32,28,.14);
+  font-family:var(--body-zh);
 }
 .writing-paper h1 {
   margin:0 0 clamp(1.2rem,2.4vw,2.2rem);
@@ -2897,4 +2901,99 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
   .writing-paper p { font-size:.43rem; line-height:1.72; }
   .workroom-controls { gap:.35rem; padding:0 .35rem; }
   .workroom-controls button { width:18px; font-size:.35rem; }
+}
+
+/* Portfolio series: full-frame landscape triptychs under a glass vitrine. */
+.triptych-scroll {
+  display:grid;
+  place-items:center;
+  padding:clamp(.65rem,1.35vw,1.25rem);
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 14% 12%,rgba(255,255,255,.48),transparent 27%),
+    radial-gradient(circle at 88% 92%,color-mix(in srgb,var(--accent) 32%,transparent),transparent 31%);
+}
+.glass-triptych {
+  position:relative;
+  width:min(100%,1180px);
+  height:100%;
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(.5rem,1.05vw,1rem);
+  padding:clamp(.62rem,1.15vw,1.05rem);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.66);
+  border-radius:clamp(10px,1.2vw,18px);
+  background:linear-gradient(135deg,rgba(255,255,255,.48),rgba(225,231,226,.25));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 0 38px rgba(255,255,255,.16),
+    0 24px 56px rgba(24,32,28,.18);
+  backdrop-filter:blur(24px) saturate(1.22);
+  -webkit-backdrop-filter:blur(24px) saturate(1.22);
+}
+.glass-triptych::before {
+  position:absolute;
+  inset:-24% 42% 44% -12%;
+  z-index:2;
+  border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,255,255,.62),rgba(255,255,255,0));
+  content:"";
+  opacity:.42;
+  filter:blur(10px);
+  pointer-events:none;
+  transform:rotate(-12deg);
+}
+.glass-triptych::after {
+  position:absolute;
+  inset:clamp(.24rem,.4vw,.4rem);
+  z-index:3;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:calc(clamp(10px,1.2vw,18px) - 4px);
+  content:"";
+  pointer-events:none;
+}
+.glass-triptych figure {
+  position:relative;
+  z-index:1;
+  min-width:0;
+  min-height:0;
+  display:grid;
+  place-items:center;
+  margin:0;
+  overflow:hidden;
+  border:1px solid rgba(24,32,28,.18);
+  border-radius:clamp(6px,.7vw,10px);
+  background:rgba(251,250,246,.66);
+  box-shadow:0 12px 30px rgba(24,32,28,.13),inset 0 0 18px rgba(255,255,255,.42);
+}
+.glass-triptych figure::after {
+  position:absolute;
+  inset:0;
+  border-top:1px solid rgba(255,255,255,.76);
+  background:linear-gradient(125deg,rgba(255,255,255,.15),transparent 28% 74%,rgba(255,255,255,.08));
+  content:"";
+  pointer-events:none;
+}
+.glass-triptych img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:saturate(.96) contrast(.99);
+  transition:filter .48s ease,transform .65s var(--luxury-ease);
+}
+.glass-triptych figure:hover img { filter:saturate(1.04) contrast(1.01); transform:scale(1.012); }
+
+@media (min-width:761px) and (max-height:620px) {
+  .triptych-scroll { padding:.42rem; }
+  .glass-triptych { gap:.4rem; padding:.44rem; border-radius:8px; }
+  .glass-triptych figure { border-radius:5px; }
+}
+
+@media (max-width:760px) {
+  .triptych-scroll { padding:.3rem; }
+  .glass-triptych { gap:.24rem; padding:.3rem; border-radius:6px; }
+  .glass-triptych figure { border-radius:3px; }
 }

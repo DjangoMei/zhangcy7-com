@@ -78,6 +78,23 @@
   }
 
   function buildImagePanel(entry) {
+    if (entry.layout === "triptych") {
+      const stage = document.createElement("div");
+      stage.className = "workroom-scroll triptych-scroll";
+      const triptych = document.createElement("div");
+      triptych.className = "glass-triptych";
+      entry.srcs.forEach((source, index) => {
+        const figure = document.createElement("figure");
+        const image = document.createElement("img");
+        image.src = source;
+        image.alt = `${entry.title} ${pad(index + 1)}`;
+        image.loading = "eager";
+        figure.append(image);
+        triptych.append(figure);
+      });
+      stage.append(triptych);
+      return stage;
+    }
     const scroller = document.createElement("div");
     scroller.className = `workroom-scroll image-scroll ${entry.long ? "is-long" : "is-poster"}`;
     const figure = document.createElement("figure");
@@ -100,11 +117,11 @@
       title.textContent = entry.title;
       format.textContent = entry.subtitle ? `${entry.format} · ${entry.subtitle}` : entry.format;
       counter.textContent = `${pad(currentIndex + 1)} / ${pad(entries.length)}`;
-      if (entry.download) {
+      if (sourceLink && entry.download) {
         sourceLink.href = entry.download;
         sourceLink.hidden = false;
         sourceLink.textContent = entry.format === "PDF" ? "打开 PDF ↗" : "下载原稿 ↓";
-      } else {
+      } else if (sourceLink) {
         sourceLink.hidden = true;
       }
       list.querySelectorAll("[data-work-index]").forEach((button, buttonIndex) => {
