@@ -883,19 +883,39 @@ img { display: block; max-width: 100%; }
 /* Quiet-luxury interaction layer — editorial restraint, tactile detail */
 @font-face {
   font-family: "ZCY XiaoWei";
-  src: url("assets/fonts/zcool-xiaowei-complete.woff2?v=20260901-channels") format("woff2");
+  src: url("assets/fonts/zcy-display.woff2?v=20260901-type-system") format("woff2");
   font-style: normal;
   font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZCY Serif";
+  src: url("assets/fonts/zcy-serif.woff2?v=20260901-type-system") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZCY Sans";
+  src: url("assets/fonts/zcy-sans.woff2?v=20260901-type-system") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
   font-display: swap;
 }
 .redesign {
   --luxury-ease: cubic-bezier(.22, 1, .36, 1);
   --soft-shadow: 0 18px 54px rgba(24, 32, 28, .075), 0 2px 8px rgba(24, 32, 28, .045);
-  --display-zh: "ZCY XiaoWei", "ZCOOL XiaoWei", "STKaiti", "KaiTi", serif;
-  --body-zh: "ZCY XiaoWei", "ZCOOL XiaoWei", "STKaiti", "KaiTi", serif;
+  --font-display: "ZCY XiaoWei", "ZCOOL XiaoWei", "STKaiti", "KaiTi", serif;
+  --font-serif: "ZCY Serif", "Songti SC", STSong, SimSun, "Noto Serif SC", serif;
+  --font-kai: "STKaiti", "KaiTi", "Kaiti SC", "ZCY XiaoWei", serif;
+  --font-sans: "ZCY Sans", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", Arial, sans-serif;
+  --display-zh: var(--font-display);
+  --body-zh: var(--font-serif);
+  --reading-sans: var(--font-sans);
   --mx: 50vw;
   --my: 50vh;
   isolation: isolate;
+  font-family: var(--font-serif);
 }
 .redesign::before,
 .redesign::after {
@@ -3075,17 +3095,7 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
   .writing-page .writing-paper p { font-size:.68rem; line-height:1.82; }
 }
 
-/* One typeface for the complete portfolio UI; the writing canvas remains sans-serif. */
-.portfolio-gallery-page .workroom-head *,
-.portfolio-gallery-page .workroom-sidebar *,
-.portfolio-gallery-page .workroom-display-head *,
-.portfolio-gallery-page .workroom-controls * {
-  font-family:var(--display-zh);
-}
-.writing-page .workroom-display,
-.writing-page .workroom-display * {
-  font-family:var(--reading-sans);
-}
+/* Semantic title wrapping keeps complete phrases together. */
 .writing-paper h1.semantic-title {
   display:flex;
   flex-wrap:wrap;
@@ -3100,12 +3110,188 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
   white-space:nowrap;
 }
 
-/* Final portfolio typography lock: no mixed Song/Kai UI glyphs. */
-.portfolio-index-page *,
-.portfolio-gallery-page * {
-  font-family:var(--display-zh) !important;
+/*
+ * Four-level site typography system
+ * 01 display: major editorial titles only
+ * 02 serif: reading copy and content titles
+ * 03 kai: short handwritten quotations
+ * 04 sans: navigation, controls, metadata and compact UI
+ */
+.redesign :where(button,input,select,textarea),
+.redesign :where(.folio-nav,.folio-issue,.folio-kicker,.folio-turn),
+.redesign :where(.home-about-label,.fact-matrix dt,.education-block>span,.next-chapter small),
+.redesign :where(.dossier-head,.project-top,.card-label),
+.redesign :where(.project-card-details>small,.project-card-details dt),
+.redesign :where(.portfolio-index-head div>span,.portfolio-index-head>b),
+.redesign :where(.portfolio-channel-rail>header,.channel-card small,.channel-card p),
+.redesign :where(.portfolio-module>span,.portfolio-module small,.portfolio-module footer),
+.redesign :where(.workroom-head span,.workroom-head>b),
+.redesign :where(.workroom-sidebar,.workroom-list button,.workroom-display-head small,.workroom-display-head>strong),
+.redesign :where(.workroom-controls,.workroom-loading,.workroom-error) {
+  font-family:var(--font-sans);
+  font-synthesis:none;
 }
+
+.redesign :where(.name-lockup h1,.spread-title h1,.project-index-head h1),
+.redesign :where(.project-card-title h2,.project-card-details>h2),
+.redesign :where(.portfolio-index-head h1,.portfolio-module h2,.workroom-head h1) {
+  font-family:var(--font-display);
+  font-synthesis:none;
+  font-weight:400;
+}
+
+.redesign :where(.home-summary,.fact-matrix dd,.education-block>strong,.education-block>p),
+.redesign :where(.timeline-row h2,.timeline-row p,.timeline-copy,.career-note-grid h3,.career-note-grid p),
+.redesign :where(.project-card-details dd,.workroom-display-head h2),
+.redesign :where(.channel-card h3,.portfolio-module p) {
+  font-family:var(--font-serif);
+  font-synthesis:none;
+}
+
+.redesign :where(.resume-quote,.resume-quote p,.ai-quote blockquote,.lab-signoff blockquote,.swatch-paper blockquote) {
+  font-family:var(--font-kai);
+  font-synthesis:none;
+}
+
+/* Compact UI must stay readable; spacing is reduced before type is reduced. */
+.folio-brand span,.folio-issue,.folio-kicker { font-size:clamp(.68rem,.78vw,.8rem); }
+.folio-nav a { font-family:var(--font-sans); font-size:clamp(.82rem,.9vw,.94rem); }
+.folio-turn { font-family:var(--font-sans); font-size:clamp(.72rem,.82vw,.86rem); }
+.folio-turn span { font-size:clamp(.66rem,.72vw,.76rem); }
+.folio-turn a:last-child { font-family:var(--font-sans); font-size:clamp(.74rem,.84vw,.88rem); }
+.folio-turn a:last-child::after { font-size:.68rem; }
+.spread-title div>span,.spread-title>b,.accent-photo figcaption { font-family:var(--font-sans); font-size:clamp(.66rem,.72vw,.76rem); }
+
+.home-summary { font-size:clamp(.88rem,.94vw,1rem); line-height:1.78; }
+.fact-matrix dt,.education-block>span,.home-about-label,.next-chapter small { font-size:clamp(.68rem,.74vw,.78rem); }
+.education-block>p { font-size:clamp(.76rem,.82vw,.88rem); line-height:1.58; }
+.home-notes li { font-size:clamp(.72rem,.78vw,.82rem); }
+.resume-quote p { font-size:clamp(1rem,1.12vw,1.18rem); line-height:1.72; }
+
+.timeline-row div>span,.career-section>span { font-family:var(--font-sans); font-size:clamp(.66rem,.72vw,.76rem); }
+.timeline-row p,.timeline-copy { font-size:clamp(.76rem,.8vw,.84rem); line-height:1.58; }
+.career-note-grid h3 { font-size:clamp(.76rem,.82vw,.88rem); }
+.career-note-grid p { font-size:clamp(.72rem,.76vw,.8rem); line-height:1.6; }
+
+/* Portfolio index: display titles, serif descriptions, sans navigation labels. */
+.portfolio-channel-rail>header span,.channel-card small,.portfolio-module>span,.portfolio-module small { font-size:clamp(.66rem,.72vw,.76rem); }
+.portfolio-channel-rail>header h2 { font-family:var(--font-display); font-size:clamp(1rem,1.18vw,1.28rem); }
+.channel-card h3 { font-family:var(--font-serif); font-size:clamp(.92rem,1vw,1.08rem); }
+.channel-card p { color:rgba(24,32,28,.72); font-size:clamp(.72rem,.78vw,.82rem); line-height:1.5; }
+.portfolio-module h2 { font-size:clamp(1.35rem,2vw,2.15rem); line-height:1.05; }
+.portfolio-module p { color:rgba(24,32,28,.72); font-size:clamp(.78rem,.84vw,.9rem); line-height:1.55; }
+.portfolio-module footer strong { font-family:var(--font-sans); font-size:clamp(.72rem,.78vw,.82rem); }
+
+/* Portfolio workrooms: every small label is sans; content title and copy stay coherent. */
+.workroom-sidebar>header small,.workroom-sidebar>footer { font-family:var(--font-sans); font-size:clamp(.66rem,.72vw,.76rem); line-height:1.35; }
+.workroom-sidebar>header strong { font-family:var(--font-sans); font-size:clamp(.96rem,1.08vw,1.15rem); font-weight:700; letter-spacing:.04em; }
+.workroom-list button span { font-family:var(--font-sans); font-size:clamp(.66rem,.72vw,.76rem); }
+.workroom-list button b { font-family:var(--font-sans); font-size:clamp(.82rem,.9vw,.96rem); font-weight:550; line-height:1.35; }
+.workroom-list button small { font-family:var(--font-sans); font-size:clamp(.62rem,.68vw,.72rem); }
+.workroom-display-head small { font-family:var(--font-sans); font-size:clamp(.66rem,.72vw,.76rem); }
+.workroom-display-head h2 { font-family:var(--font-serif); font-size:clamp(1rem,1.2vw,1.28rem); font-weight:650; }
+.workroom-display-head>strong { font-family:var(--font-sans); font-size:clamp(.68rem,.74vw,.78rem); }
+.workroom-controls button { font-family:var(--font-sans); font-size:.78rem; }
+
+/* Writing viewer is deliberately sans for long-form screen reading. */
 .writing-page .workroom-display,
-.writing-page .workroom-display * {
-  font-family:var(--reading-sans) !important;
+.writing-page .workroom-display-head,
+.writing-page .workroom-display-head h2,
+.writing-page .writing-paper,
+.writing-page .writing-paper h1,
+.writing-page .writing-paper h2,
+.writing-page .writing-paper p {
+  font-family:var(--font-sans);
+}
+.writing-page .writing-paper h1 { font-size:clamp(1.9rem,2.8vw,3rem); font-weight:750; line-height:1.28; }
+.writing-page .writing-paper h2 { font-size:clamp(1.14rem,1.5vw,1.58rem); font-weight:700; }
+.writing-page .writing-paper p { font-size:clamp(.94rem,1.03vw,1.08rem); line-height:1.9; }
+
+/* Project cards: descriptions remain legible inside the fixed-height archive. */
+.project-card-details dt { font-family:var(--font-sans); font-size:clamp(.68rem,.74vw,.78rem); }
+.project-card-details dd { font-family:var(--font-serif); font-size:clamp(.74rem,.82vw,.88rem); line-height:1.46; }
+.project-card-details dd strong { font-family:var(--font-display); }
+
+/* Dividend key art: preserve and centre the complete “红利之上” title. */
+.project-card--dividend figure img {
+  position:absolute;
+  top:50%;
+  left:0;
+  width:188%;
+  min-width:188%;
+  max-width:none;
+  height:auto;
+  object-fit:fill;
+  object-position:left center;
+  transform:translateY(-50%);
+  transform-origin:left center;
+}
+.project-card--dividend:hover figure img,
+.project-card--dividend:focus-visible figure img { transform:translateY(-50%); }
+
+@media (min-width:761px) and (max-height:620px) {
+  .timeline-row time { font-size:.64rem; }
+  .timeline-row div>span,.career-section>span { font-size:.6rem; letter-spacing:.06em; }
+  .timeline-row h2 { font-size:.86rem; }
+  .timeline-row p,.timeline-copy,.career-note-grid p { font-size:.66rem; line-height:1.38; }
+  .career-note-grid h3 { font-size:.76rem; }
+
+  .workroom-head span { font-size:.64rem; }
+  .workroom-head>p { font-size:.72rem; line-height:1.35; }
+  .workroom-head>b { font-size:.66rem; }
+  .workroom-shell { grid-template-columns:clamp(210px,19vw,260px) minmax(0,1fr); }
+  .workroom-sidebar { padding:.45rem .58rem; }
+  .workroom-sidebar>header small { font-size:.6rem; }
+  .workroom-sidebar>header strong { font-size:.86rem; }
+  .workroom-list button { padding:.2rem .06rem; }
+  .workroom-list button span,.workroom-list button small { font-size:.58rem; }
+  .workroom-list button b { font-size:.74rem; }
+  .workroom-sidebar>footer { font-size:.58rem; }
+  .workroom-display-head small { font-size:.58rem; }
+  .workroom-display-head h2 { font-size:.9rem; }
+  .workroom-display-head>strong { font-size:.6rem; }
+  .writing-page .writing-paper h1 { font-size:1.48rem; }
+  .writing-page .writing-paper h2 { font-size:1rem; }
+  .writing-page .writing-paper p { font-size:.78rem; line-height:1.78; }
+
+  .project-card-title h2 { font-size:.76rem; }
+  .project-card--bus .project-card-title h2,.project-card--time .project-card-title h2 { font-size:1rem; }
+  .project-card-details>small { font-size:.58rem; }
+  .project-card-details>h2,.project-card--bus .project-card-details>h2,.project-card--time .project-card-details>h2 { font-size:.9rem; }
+  .project-card-details dt { font-size:.58rem; }
+  .project-card-details dd { font-size:.64rem; line-height:1.3; }
+}
+
+@media (max-width:760px) {
+  .folio-header { min-height:52px; }
+  .folio-nav a { font-size:.76rem; }
+  .workroom-shell { grid-template-columns:minmax(142px,.42fr) minmax(0,1fr); }
+  .workroom-sidebar { padding:.4rem; }
+  .workroom-sidebar>header small { font-size:.58rem; }
+  .workroom-sidebar>header strong { font-size:.78rem; }
+  .workroom-list button { padding:.24rem .04rem; }
+  .workroom-list button span { font-size:.56rem; }
+  .workroom-list button b { font-size:.68rem; }
+  .workroom-sidebar>footer { font-size:.55rem; }
+  .workroom-display-head small { font-size:.55rem; }
+  .workroom-display-head h2 { font-size:.76rem; }
+  .workroom-display-head>strong { font-size:.56rem; }
+  .writing-page .writing-paper h1 { font-size:1.22rem; }
+  .writing-page .writing-paper h2 { font-size:.88rem; }
+  .writing-page .writing-paper p { font-size:.76rem; line-height:1.82; }
+
+  .portfolio-channel-rail>header span,.channel-card small,.portfolio-module>span,.portfolio-module small { font-size:.58rem; }
+  .channel-card h3 { font-size:.8rem; }
+  .channel-card p { font-size:.66rem; }
+  .portfolio-module h2 { font-size:clamp(.9rem,4vw,1.18rem); }
+  .portfolio-module footer strong { font-size:.64rem; }
+
+  .timeline-panel,.career-notes { overflow-y:auto; overscroll-behavior:contain; }
+  .timeline-row { grid-template-columns:52px 1fr; overflow:visible; }
+  .timeline-row time { font-size:.62rem; }
+  .timeline-row div>span,.career-section>span { font-size:.58rem; }
+  .timeline-row h2,.career-section h2 { font-size:.82rem; }
+  .timeline-row p,.timeline-copy,.career-note-grid p { font-size:.66rem; line-height:1.48; }
+  .career-note-grid h3 { font-size:.72rem; }
+  .project-card-details { overflow-y:auto; overscroll-behavior:contain; }
 }
