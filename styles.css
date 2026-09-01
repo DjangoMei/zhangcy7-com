@@ -3229,6 +3229,140 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
 .project-card--dividend:hover figure img,
 .project-card--dividend:focus-visible figure img { transform:translateY(-50%); }
 
+/* Laptop-fit refinements: concise experience tags, handwriting and image-room sizing. */
+.redesign {
+  --font-kai:"STXingkai","华文行楷","STKaiti","华文楷体","Kaiti SC","KaiTi","ZCY XiaoWei",serif;
+}
+
+.redesign .resume-quote,
+.redesign .resume-quote p {
+  font-family:var(--font-kai);
+  font-synthesis:style;
+  font-weight:400;
+  letter-spacing:.075em;
+}
+.redesign .resume-quote p:first-child { transform:rotate(-.18deg); }
+.redesign .resume-quote p:last-child { transform:rotate(.12deg); }
+
+.keyword-tabs {
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  gap:clamp(.24rem,.42vw,.4rem);
+  margin:.38rem 0 0;
+  padding:0;
+  list-style:none;
+}
+.keyword-tabs li {
+  padding:clamp(.22rem,.34vh,.3rem) clamp(.46rem,.7vw,.68rem);
+  border:1px solid rgba(24,32,28,.26);
+  border-radius:999px;
+  background:rgba(255,255,255,.3);
+  font-family:var(--font-sans);
+  font-size:clamp(.64rem,.7vw,.74rem);
+  font-weight:600;
+  line-height:1.2;
+  white-space:nowrap;
+}
+.timeline-row.current .keyword-tabs li {
+  border-color:rgba(24,32,28,.3);
+  background:rgba(244,243,238,.48);
+}
+.keyword-tabs--dark { margin-top:.28rem; gap:.25rem; }
+.keyword-tabs--dark li {
+  padding:.2rem .45rem;
+  border-color:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.07);
+  color:rgba(255,255,255,.82);
+  font-size:clamp(.6rem,.65vw,.68rem);
+  font-weight:500;
+}
+.career-note-grid h3 { margin-bottom:.18rem; }
+
+.portfolio-gallery-page:not(.writing-page) .workroom-sidebar>header {
+  display:grid;
+  justify-content:stretch;
+  align-content:start;
+  align-items:start;
+  gap:.18rem;
+}
+.portfolio-gallery-page:not(.writing-page) .workroom-sidebar>header small,
+.portfolio-gallery-page:not(.writing-page) .workroom-sidebar>header strong {
+  display:block;
+  max-width:100%;
+  white-space:nowrap;
+}
+.portfolio-gallery-page:not(.writing-page) .workroom-list button {
+  grid-template-columns:clamp(24px,2.2vw,34px) minmax(0,1fr);
+  align-items:center;
+}
+.portfolio-gallery-page:not(.writing-page) .workroom-list button b {
+  display:-webkit-box;
+  overflow:hidden;
+  line-height:1.36;
+  text-overflow:clip;
+  white-space:normal;
+  word-break:keep-all;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.portfolio-gallery-page:not(.writing-page) .workroom-list button small { display:none; }
+
+.triptych-page .portfolio-room-stage {
+  grid-template-rows:clamp(58px,8.4vh,72px) minmax(0,1fr) 32px;
+  gap:clamp(.3rem,.55vh,.45rem);
+}
+.triptych-page .workroom-head h1 { font-size:clamp(1.75rem,2.75vw,3rem); }
+.triptych-page .workroom-head h1 i { display:none; }
+.triptych-page .workroom-shell { grid-template-columns:clamp(160px,14.5vw,205px) minmax(0,1fr); }
+.triptych-page .workroom-display { grid-template-rows:clamp(42px,6.2vh,50px) minmax(0,1fr) clamp(27px,4vh,32px); }
+.triptych-page .triptych-scroll { padding:clamp(.28rem,.62vw,.55rem); }
+.triptych-page .glass-triptych {
+  width:min(100%,1080px);
+  max-height:100%;
+  gap:clamp(.28rem,.6vw,.55rem);
+  padding:clamp(.3rem,.62vw,.55rem);
+}
+.triptych-page .glass-triptych figure { padding:0; overflow:hidden; }
+.portfolio-gallery-page .glass-triptych img {
+  --triptych-inset:clamp(.12rem,.24vw,.22rem);
+  position:absolute;
+  inset:var(--triptych-inset);
+  width:calc(100% - 2 * var(--triptych-inset));
+  height:calc(100% - 2 * var(--triptych-inset));
+  max-width:none;
+  max-height:none;
+  object-fit:contain;
+}
+
+@media (min-width:761px) and (max-height:760px) {
+  .experience-page .spread-stage { grid-template-rows:clamp(66px,9.5vh,78px) minmax(0,1fr) 30px; gap:.36rem; }
+  .experience-page .spread-title { padding:.32rem 0; }
+  .experience-page .spread-title h1 { font-size:clamp(2.2rem,4.3vw,4.4rem); }
+  .experience-page .timeline-panel { grid-template-rows:1.18fr .98fr .66fr; gap:.3rem; }
+  .experience-page .timeline-row { padding:.42rem .58rem; }
+  .experience-page .timeline-row h2 { margin:.12rem 0 .26rem; font-size:clamp(.88rem,1.08vw,1.08rem); }
+  .experience-page .keyword-tabs { gap:.2rem; margin-top:.24rem; }
+  .experience-page .keyword-tabs li { padding:.18rem .42rem; font-size:.6rem; }
+  .experience-page .career-notes { gap:.42rem; padding:.62rem; }
+  .experience-page .career-section h2 { margin:.14rem 0 .28rem; font-size:1rem; }
+  .experience-page .career-note-grid { gap:.3rem .4rem; }
+  .experience-page .career-note-grid article { padding-top:.24rem; }
+  .experience-page .career-note-grid h3 { font-size:.67rem; }
+  .experience-page .keyword-tabs--dark li { padding:.16rem .38rem; font-size:.56rem; }
+
+  .triptych-page .folio-header { height:50px; }
+  .triptych-page .portfolio-room-stage { height:calc(100svh - 50px); grid-template-rows:50px minmax(0,1fr) 28px; gap:.28rem; }
+  .triptych-page .workroom-head { padding:.12rem 0 .18rem; }
+  .triptych-page .workroom-head span { margin-bottom:.05rem; font-size:.58rem; }
+  .triptych-page .workroom-head h1 { font-size:1.65rem; }
+  .triptych-page .workroom-shell { grid-template-columns:clamp(145px,13.5vw,185px) minmax(0,1fr); }
+  .triptych-page .workroom-display { grid-template-rows:38px minmax(0,1fr) 25px; }
+  .triptych-page .workroom-display-head { padding:0 .48rem; }
+  .triptych-page .triptych-scroll { padding:.22rem; }
+  .triptych-page .glass-triptych { gap:.24rem; padding:.26rem; border-radius:7px; }
+}
+
 @media (min-width:761px) and (max-height:620px) {
   .timeline-row time { font-size:.64rem; }
   .timeline-row div>span,.career-section>span { font-size:.6rem; letter-spacing:.06em; }
