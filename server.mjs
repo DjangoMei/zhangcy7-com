@@ -8,6 +8,7 @@ const ROOT = fileURLToPath(new URL(".", import.meta.url));
 const HOST = process.env.HOST || "127.0.0.1";
 const START_PORT = Number(process.env.PORT || 3010);
 const BLOCKED_PORTS = new Set([3000, 4173, 8787]);
+const ASSET_CDN = "https://djangomei.github.io/zhangcy7-com";
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -49,7 +50,8 @@ function resolveRequestPath(requestUrl = "/") {
 
 const port = await findPort();
 const server = createServer((request, response) => {
-  const filePath = resolveRequestPath(request.url);
+  const requestUrl = new URL(request.url || "/", "http://localhost");
+  const filePath = resolveRequestPath(requestUrl.pathname);
   if (!filePath) {
     response.writeHead(403).end("Forbidden");
     return;
@@ -70,6 +72,15 @@ const server = createServer((request, response) => {
     });
     createReadStream(filePath).pipe(response);
   } catch {
+    if (requestUrl.pathname.startsWith("/assets/")) {
+      response.writeHead(302, {
+        Location: `${ASSET_CDN}${requestUrl.pathname}`,
+        "Cache-Control": "public, max-age=300",
+        "X-Content-Type-Options": "nosniff",
+      });
+      response.end();
+      return;
+    }
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("页面不存在");
   }
