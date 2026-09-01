@@ -2201,3 +2201,249 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
   .portfolio-index-page .folio-turn { font-size:.5rem; }
   .portfolio-index-page .folio-turn span { font-size:.4rem; }
 }
+
+/* 2026-09 projects — single-page hover archive */
+.projects-index-page .spread-stage {
+  grid-template-rows:clamp(76px,11.5vh,96px) minmax(0,1fr) 38px;
+}
+.projects-index-page .project-index-head {
+  grid-template-columns:minmax(0,1fr) auto;
+  padding:clamp(.38rem,1vh,.68rem) 0;
+}
+.projects-index-page .project-index-head h1 {
+  font-size:clamp(2.2rem,3.85vw,4rem);
+}
+.projects-index-page .project-index-head > b { grid-column:2; }
+.project-overview-grid {
+  min-width:0;
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-template-rows:minmax(0,1.12fr) minmax(0,.88fr);
+  grid-template-areas:
+    "bus bus time time family"
+    "midyear year crossover dividend parent";
+  gap:clamp(.42rem,.68vw,.66rem);
+  overflow:hidden;
+}
+.project-card--bus { grid-area:bus; --project-accent:#93aeb7; }
+.project-card--time { grid-area:time; --project-accent:#d2c35e; }
+.project-card--family { grid-area:family; --project-accent:#c6a66e; }
+.project-card--midyear { grid-area:midyear; --project-accent:#9c97b8; }
+.project-card--year { grid-area:year; --project-accent:#d2b25c; }
+.project-card--crossover { grid-area:crossover; --project-accent:#99ad91; }
+.project-card--dividend { grid-area:dividend; --project-accent:#c8a15c; }
+.project-card--parent { grid-area:parent; --project-accent:#83b6c7; }
+.project-hover-card {
+  position:relative;
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+  border:1px solid rgba(24,32,28,.42);
+  border-radius:4px;
+  background:#28312d;
+  outline:none;
+  isolation:isolate;
+  -webkit-tap-highlight-color:transparent;
+}
+.project-hover-card::after {
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(180deg,transparent 46%,rgba(12,16,14,.14) 66%,rgba(12,16,14,.88) 100%);
+  content:"";
+  pointer-events:none;
+  transition:opacity .45s var(--luxury-ease);
+}
+.project-hover-card figure {
+  position:absolute;
+  inset:0;
+  z-index:0;
+  margin:0;
+  overflow:hidden;
+  background:#d9d7cf;
+}
+.project-hover-card figure img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  filter:saturate(.82) contrast(.97) brightness(.94);
+  transition:transform .8s var(--luxury-ease),filter .55s ease;
+}
+.project-card--bus figure img { object-position:center 46%; }
+.project-card--family figure img { object-position:center 58%; }
+.project-card--midyear figure img { object-position:center 52%; }
+.project-card--crossover figure img { object-position:center 55%; }
+.project-card--dividend figure img { object-position:center 58%; }
+.project-card--parent figure img { object-position:center; }
+.project-card-title {
+  position:absolute;
+  right:0;
+  bottom:0;
+  left:0;
+  z-index:2;
+  display:flex;
+  align-items:flex-end;
+  min-height:clamp(52px,8vh,74px);
+  padding:clamp(.55rem,.9vw,.9rem);
+  color:#fff;
+  pointer-events:none;
+  transition:opacity .28s ease,transform .42s var(--luxury-ease);
+}
+.project-card-title h2 {
+  margin:0;
+  font-family:var(--display-zh);
+  font-size:clamp(.82rem,1.18vw,1.28rem);
+  font-weight:400;
+  letter-spacing:-.02em;
+  line-height:1.08;
+  text-wrap:balance;
+  text-shadow:0 2px 14px rgba(0,0,0,.42);
+}
+.project-card--bus .project-card-title h2,
+.project-card--time .project-card-title h2 {
+  font-size:clamp(1.35rem,2.2vw,2.35rem);
+}
+.project-card-details {
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  padding:clamp(.62rem,1.05vw,1rem);
+  overflow:hidden;
+  border-top:3px solid var(--project-accent);
+  background:rgba(237,236,230,.95);
+  color:var(--folio-ink);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(10px);
+  backdrop-filter:blur(13px) saturate(.82);
+  pointer-events:none;
+  transition:opacity .34s ease,transform .5s var(--luxury-ease),visibility 0s linear .35s;
+}
+.project-card-details > small {
+  color:#63786a;
+  font:700 .4rem/1.2 "SFMono-Regular","Roboto Mono",Consolas,monospace;
+  letter-spacing:.12em;
+}
+.project-card-details > h2 {
+  margin:.28rem 0 .45rem;
+  font-family:var(--display-zh);
+  font-size:clamp(.82rem,1.15vw,1.22rem);
+  font-weight:400;
+  letter-spacing:-.025em;
+  line-height:1.08;
+  text-wrap:balance;
+}
+.project-card--bus .project-card-details > h2,
+.project-card--time .project-card-details > h2 {
+  font-size:clamp(1.2rem,1.85vw,1.9rem);
+}
+.project-card-details dl {
+  display:grid;
+  gap:clamp(.26rem,.55vh,.46rem);
+  margin:auto 0 0;
+}
+.project-card-details dl > div {
+  display:grid;
+  grid-template-columns:clamp(48px,4.2vw,72px) minmax(0,1fr);
+  gap:clamp(.4rem,.7vw,.68rem);
+  padding-top:clamp(.28rem,.52vh,.44rem);
+  border-top:1px solid rgba(24,32,28,.2);
+}
+.project-card-details dt {
+  color:#607568;
+  font-family:var(--body-zh);
+  font-size:clamp(.48rem,.55vw,.58rem);
+  font-weight:600;
+  letter-spacing:.04em;
+}
+.project-card-details dd {
+  margin:0;
+  font-family:var(--body-zh);
+  font-size:clamp(.52rem,.6vw,.63rem);
+  font-weight:500;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+.project-hover-card:hover,
+.project-hover-card:focus-visible {
+  border-color:var(--folio-ink);
+  box-shadow:inset 0 0 0 1px rgba(24,32,28,.18);
+}
+.project-hover-card:hover figure img,
+.project-hover-card:focus-visible figure img {
+  filter:saturate(.98) contrast(.99) brightness(.98);
+  transform:scale(1.018);
+}
+.project-hover-card:hover::after,
+.project-hover-card:focus-visible::after,
+.project-hover-card:hover .project-card-title,
+.project-hover-card:focus-visible .project-card-title {
+  opacity:0;
+  transform:translateY(7px);
+}
+.project-hover-card:hover .project-card-details,
+.project-hover-card:focus-visible .project-card-details {
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+  transition-delay:0s;
+}
+
+@media (min-width:761px) and (max-height:620px) {
+  .projects-index-page .spread-stage {
+    grid-template-rows:58px minmax(0,1fr) 28px;
+    gap:.34rem;
+  }
+  .projects-index-page .project-index-head { padding:.2rem 0 .28rem; }
+  .projects-index-page .project-index-head > div > span { margin-bottom:.12rem; font-size:.36rem; }
+  .projects-index-page .project-index-head h1 { font-size:clamp(1.7rem,7.8vh,2.35rem); }
+  .projects-index-page .project-index-head > b { font-size:.38rem; }
+  .project-overview-grid { gap:.34rem; }
+  .project-card-title { min-height:38px; padding:.38rem; }
+  .project-card-title h2 { font-size:.58rem; }
+  .project-card--bus .project-card-title h2,
+  .project-card--time .project-card-title h2 { font-size:.88rem; }
+  .project-card-details { padding:.35rem .4rem; border-top-width:2px; }
+  .project-card-details > small { font-size:.25rem; }
+  .project-card-details > h2,
+  .project-card--bus .project-card-details > h2,
+  .project-card--time .project-card-details > h2 { margin:.08rem 0 .16rem; font-size:.6rem; }
+  .project-card-details dl { gap:.1rem; }
+  .project-card-details dl > div { grid-template-columns:38px minmax(0,1fr); gap:.22rem; padding-top:.14rem; }
+  .project-card-details dt { font-size:.27rem; }
+  .project-card-details dd { font-size:.31rem; line-height:1.22; }
+  .projects-index-page .folio-turn { font-size:.5rem; }
+  .projects-index-page .folio-turn span { font-size:.38rem; }
+}
+
+@media (max-width:760px) {
+  .projects-index-page .spread-stage { grid-template-rows:66px minmax(0,1fr) 32px; gap:.38rem; }
+  .projects-index-page .project-index-head { grid-template-columns:minmax(0,1fr) auto; padding:.3rem 0; }
+  .projects-index-page .project-index-head h1 { font-size:clamp(1.45rem,6.8vw,2rem); }
+  .projects-index-page .project-index-head h1 i { display:none; }
+  .projects-index-page .project-index-head > b { padding-left:.5rem; font-size:.32rem; }
+  .project-overview-grid {
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-template-areas:none;
+    gap:.32rem;
+  }
+  .project-overview-grid .project-hover-card { grid-area:auto; }
+  .project-card-title { min-height:42px; padding:.38rem; }
+  .project-card-title h2,
+  .project-card--bus .project-card-title h2,
+  .project-card--time .project-card-title h2 { font-size:clamp(.52rem,2.5vw,.78rem); }
+  .project-card-details { padding:.34rem; border-top-width:2px; }
+  .project-card-details > small { display:none; }
+  .project-card-details > h2,
+  .project-card--bus .project-card-details > h2,
+  .project-card--time .project-card-details > h2 { margin:0 0 .2rem; font-size:clamp(.5rem,2.25vw,.7rem); }
+  .project-card-details dl { gap:.12rem; }
+  .project-card-details dl > div { display:block; padding-top:.15rem; }
+  .project-card-details dt { font-size:.28rem; }
+  .project-card-details dd { margin-top:.04rem; font-size:.32rem; line-height:1.22; }
+}
