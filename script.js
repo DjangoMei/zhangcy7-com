@@ -121,9 +121,8 @@ const routes = [
   ["projects.html", "项目速览"],
   ["portfolio.html", "作品目录"],
   ["writing.html", "文字作品"],
-  ["design-hand.html", "手工设计"],
-  ["design-ai.html", "AI 设计"],
-  ["video.html", "视频作品"],
+  ["design-hand.html", "设计图片"],
+  ["design-ai.html", "AI 图片"],
   ["other.html", "其他作品"]
 ];
 const rail = document.createElement("nav");
@@ -143,7 +142,7 @@ function revealPage() {
   if (reduceMotion) return;
   const selectors = body.classList.contains("page-home")
     ? [".folio-header", ".home-lead", ".home-photo", ".home-dossier", ".home-notes > *"]
-    : [".folio-header", ".spread-title > *, .project-case-head > *, .project-index-head > *, .case-study-head > *", ".experience-board > *, .projects-board > *, .project-index-grid > *, .project-magazine-grid > *, .project-landscape-grid > *, .project-overview-grid > *, .project-detail-grid > *, .case-study-board > *, .portfolio-board > *, .gallery-board > *", ".folio-turn"];
+    : [".folio-header", ".spread-title > *, .project-case-head > *, .project-index-head > *, .case-study-head > *, .workroom-head > *", ".experience-board > *, .projects-board > *, .project-index-grid > *, .project-magazine-grid > *, .project-landscape-grid > *, .project-overview-grid > *, .project-detail-grid > *, .case-study-board > *, .portfolio-board > *, .gallery-board > *, .workroom-shell > *", ".folio-turn"];
   const elements = selectors.flatMap((selector) => Array.from(document.querySelectorAll(selector)));
   elements.forEach((element, index) => {
     element.animate(
