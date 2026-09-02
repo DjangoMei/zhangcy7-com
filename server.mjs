@@ -25,6 +25,13 @@ const MIME_TYPES = {
   ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 
+function cacheControlFor(extension) {
+  if (extension === ".woff2") return "public, max-age=31536000, immutable";
+  if ([".png", ".jpg", ".jpeg", ".svg", ".webp"].includes(extension)) return "public, max-age=604800";
+  if ([".pdf", ".docx"].includes(extension)) return "public, max-age=86400";
+  return "no-cache";
+}
+
 function portIsFree(port) {
   return new Promise((resolve) => {
     const probe = createNetServer();
@@ -60,17 +67,65 @@ const server = createServer((request, response) => {
   try {
     const stats = statSync(filePath);
     if (!stats.isFile()) throw new Error("Not a file");
-    const contentType = MIME_TYPES[extname(filePath).toLowerCase()];
+    const extension = extname(filePath).toLowerCase();
+    const contentType = MIME_TYPES[extension];
     if (!contentType) {
       response.writeHead(415).end("Unsupported media type");
       return;
     }
-    response.writeHead(200, {
+
+    if (request.method !== "GET" && request.method !== "HEAD") {
+      response.writeHead(405, { "Allow": "GET, HEAD" }).end("Method not allowed");
+      return;
+    }
+
+    const headers = {
       "Content-Type": contentType,
-      "Cache-Control": "no-cache",
+      "Cache-Control": cacheControlFor(extension),
+      "Content-Length": stats.size,
+      "Last-Modified": stats.mtime.toUTCString(),
       "X-Content-Type-Options": "nosniff",
-    });
-    createReadStream(filePath).pipe(response);
+    };
+
+    if (extension === ".pdf") headers["Accept-Ranges"] = "bytes";
+
+    const range = extension === ".pdf" ? request.headers.range : null;
+    if (range) {
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!match || (!match[1] && !match[2])) {
+        response.writeHead(416, { ...headers, "Content-Range": `bytes */${stats.size}`, "Content-Length": 0 }).end();
+        return;
+      }
+
+      let start;
+      let end;
+      if (!match[1]) {
+        const suffixLength = Number(match[2]);
+        start = Math.max(0, stats.size - suffixLength);
+        end = stats.size - 1;
+      } else {
+        start = Number(match[1]);
+        end = match[2] ? Math.min(Number(match[2]), stats.size - 1) : stats.size - 1;
+      }
+
+      if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0 || start > end || start >= stats.size) {
+        response.writeHead(416, { ...headers, "Content-Range": `bytes */${stats.size}`, "Content-Length": 0 }).end();
+        return;
+      }
+
+      response.writeHead(206, {
+        ...headers,
+        "Content-Range": `bytes ${start}-${end}/${stats.size}`,
+        "Content-Length": end - start + 1,
+      });
+      if (request.method === "HEAD") response.end();
+      else createReadStream(filePath, { start, end }).pipe(response);
+      return;
+    }
+
+    response.writeHead(200, headers);
+    if (request.method === "HEAD") response.end();
+    else createReadStream(filePath).pipe(response);
   } catch {
     if (requestUrl.pathname.startsWith("/assets/")) {
       response.writeHead(302, {

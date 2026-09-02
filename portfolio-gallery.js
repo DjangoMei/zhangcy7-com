@@ -82,6 +82,21 @@
     return pdfJsPromise;
   }
 
+  function warmPdfViewer() {
+    loadPdfJs().catch(() => {
+      pdfJsPromise = null;
+    });
+    if (!document.querySelector('link[data-pdf-worker-prefetch]')) {
+      const workerPrefetch = document.createElement("link");
+      workerPrefetch.rel = "prefetch";
+      workerPrefetch.as = "script";
+      workerPrefetch.crossOrigin = "anonymous";
+      workerPrefetch.href = PDFJS_WORKER;
+      workerPrefetch.dataset.pdfWorkerPrefetch = "";
+      document.head.append(workerPrefetch);
+    }
+  }
+
   async function mountPdfViewer(scroller, entry, token) {
     const toolbar = scroller.querySelector(".pdf-viewer-toolbar");
     const stage = scroller.querySelector(".pdf-page-stage");
@@ -131,7 +146,7 @@
         const availableWidth = Math.max(220, stage.clientWidth - 24);
         const availableHeight = Math.max(260, stage.clientHeight - 20);
         const fitScale = Math.min(availableWidth / baseViewport.width, availableHeight / baseViewport.height);
-        const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.75);
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, compactRoom ? 1.5 : 1.25);
         const renderViewport = page.getViewport({ scale: fitScale * pixelRatio });
         const displayViewport = page.getViewport({ scale: fitScale });
         canvasElement.width = Math.floor(renderViewport.width);
@@ -313,6 +328,10 @@
       button.innerHTML = `<span>${pad(index + 1)}</span><b></b><small>${entry.format}</small>`;
       button.querySelector("b").textContent = entry.title;
       button.addEventListener("click", () => renderEntry(index));
+      if (entry.format === "PDF") {
+        button.addEventListener("pointerenter", warmPdfViewer, { once: true });
+        button.addEventListener("focus", warmPdfViewer, { once: true });
+      }
       list.append(button);
     });
   }
@@ -322,6 +341,11 @@
     room.classList.toggle("is-single-entry", entries.length <= 1);
     renderList();
     renderEntry(0, { immediate: true });
+    if (data.some((entry) => entry.format === "PDF")) {
+      const warm = () => warmPdfViewer();
+      if ("requestIdleCallback" in window) window.requestIdleCallback(warm, { timeout: 2400 });
+      else window.setTimeout(warm, 1400);
+    }
   }
 
   function navigatePanel(delta) {
