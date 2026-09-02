@@ -4092,4 +4092,23 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
     max-height:none;
     object-fit:contain;
   }
+
+  /* Every dark mobile control keeps a high-contrast white label. */
+  .folio-nav a[aria-current="page"],
+  .work-type-switcher a[aria-current="page"],
+  .hierarchy-dock a:last-child,
+  .workroom-controls button:last-child,
+  .next-chapter,
+  .portfolio-module.is-active {
+    color:#fff !important;
+    -webkit-text-fill-color:#fff;
+  }
+  .folio-nav a[aria-current="page"] *,
+  .work-type-switcher a[aria-current="page"] *,
+  .hierarchy-dock a:last-child *,
+  .workroom-controls button:last-child *,
+  .next-chapter * {
+    color:inherit !important;
+    -webkit-text-fill-color:inherit;
+  }
 }
