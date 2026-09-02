@@ -4,6 +4,7 @@ if (year) year.textContent = new Date().getFullYear();
 const body = document.body;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = window.matchMedia("(pointer: fine)").matches;
+const compactViewport = window.matchMedia("(max-width: 760px)").matches;
 const currentRoute = window.location.pathname.split("/").pop() || "index.html";
 const parentRoutes = {
   "experience.html": "index.html",
@@ -33,46 +34,66 @@ function navigateTo(destination, { replace = false } = {}) {
     return;
   }
 
+  body.classList.add("is-page-leaving");
   const main = document.querySelector("main");
   if (main) {
-    const mainRect = main.getBoundingClientRect();
-    const echoA = main.cloneNode(true);
-    const echoB = main.cloneNode(true);
-    [echoA, echoB].forEach((echo, index) => {
-      echo.className = `${main.className} page-echo page-echo-${index + 1}`;
-      echo.removeAttribute("id");
-      echo.setAttribute("aria-hidden", "true");
-      echo.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
-      echo.querySelectorAll("a, button, input, select, textarea").forEach((node) => node.setAttribute("tabindex", "-1"));
-      Object.assign(echo.style, {
-        top: `${mainRect.top}px`,
-        left: `${mainRect.left}px`,
-        width: `${mainRect.width}px`,
-        height: `${mainRect.height}px`
+    if (!compactViewport) {
+      const mainRect = main.getBoundingClientRect();
+      const echoA = main.cloneNode(true);
+      const echoB = main.cloneNode(true);
+      [echoA, echoB].forEach((echo, index) => {
+        echo.className = `${main.className} page-echo page-echo-${index + 1}`;
+        echo.removeAttribute("id");
+        echo.setAttribute("aria-hidden", "true");
+        echo.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+        echo.querySelectorAll("a, button, input, select, textarea").forEach((node) => node.setAttribute("tabindex", "-1"));
+        Object.assign(echo.style, {
+          top: `${mainRect.top}px`,
+          left: `${mainRect.left}px`,
+          width: `${mainRect.width}px`,
+          height: `${mainRect.height}px`
+        });
+        body.append(echo);
       });
-      body.append(echo);
-    });
-    echoA.animate(
-      [{ opacity: .22, transform: "translate3d(0,0,0)", filter: "blur(0)" }, { opacity: 0, transform: "translate3d(18px,-4px,0)", filter: "blur(4px)" }],
-      { duration: 520, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }
-    );
-    echoB.animate(
-      [{ opacity: .16, transform: "translate3d(0,0,0)", filter: "blur(0)" }, { opacity: 0, transform: "translate3d(-24px,5px,0)", filter: "blur(7px)" }],
-      { duration: 560, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }
-    );
+      echoA.animate(
+        [
+          { opacity: .32, transform: "translate3d(0,0,0) scale(1)", filter: "blur(0) saturate(1)" },
+          { opacity: .18, offset: .48, transform: "translate3d(18px,-5px,0) scale(.998)", filter: "blur(2px) saturate(.9)" },
+          { opacity: 0, transform: "translate3d(42px,-9px,0) scale(.994)", filter: "blur(7px) saturate(.76)" }
+        ],
+        { duration: 680, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }
+      );
+      echoB.animate(
+        [
+          { opacity: .24, transform: "translate3d(0,0,0) scale(1)", filter: "blur(0)" },
+          { opacity: .13, offset: .52, transform: "translate3d(-21px,6px,0) scale(1.002)", filter: "blur(3px)" },
+          { opacity: 0, transform: "translate3d(-48px,11px,0) scale(1.006)", filter: "blur(9px)" }
+        ],
+        { duration: 720, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }
+      );
+    }
     main.animate(
-      [{ opacity: 1, transform: "translate3d(0,0,0)", filter: "blur(0)" }, { opacity: 0, transform: "translate3d(-8px,0,0)", filter: "blur(3px)" }],
-      { duration: 480, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }
+      [
+        { opacity: 1, transform: "translate3d(0,0,0) scale(1)", filter: "blur(0)" },
+        { opacity: .58, offset: .56, transform: "translate3d(-7px,0,0) scale(.998)", filter: "blur(2px)" },
+        { opacity: .08, transform: "translate3d(-18px,0,0) scale(.992)", filter: "blur(7px)" }
+      ],
+      { duration: compactViewport ? 480 : 640, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }
     );
   }
   curtain.animate(
-    [{ opacity: 0 }, { opacity: .72 }],
-    { duration: 520, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" }
+    [
+      { opacity: 0, transform: "translate3d(-145%,0,0) skewX(-8deg)" },
+      { opacity: .92, offset: .38, transform: "translate3d(-24%,0,0) skewX(-8deg)" },
+      { opacity: .82, offset: .7, transform: "translate3d(28%,0,0) skewX(-8deg)" },
+      { opacity: 0, transform: "translate3d(145%,0,0) skewX(-8deg)" }
+    ],
+    { duration: compactViewport ? 560 : 720, easing: "cubic-bezier(.65,0,.24,1)", fill: "forwards" }
   );
   window.setTimeout(() => {
     if (replace) window.location.replace(destination);
     else window.location.href = destination;
-  }, 500);
+  }, compactViewport ? 500 : 640);
 }
 
 document.addEventListener("click", (event) => {
@@ -104,6 +125,7 @@ window.addEventListener("popstate", (event) => {
 window.addEventListener("pageshow", (event) => {
   if (!event.persisted) return;
   navigating = false;
+  body.classList.remove("is-page-leaving");
   document.querySelectorAll(".page-echo").forEach((echo) => echo.remove());
   curtain.getAnimations().forEach((animation) => animation.cancel());
   curtain.style.opacity = "0";
@@ -147,10 +169,10 @@ function revealPage() {
   elements.forEach((element, index) => {
     element.animate(
       [
-        { opacity: 0, transform: "translate3d(0,8px,0)", filter: "blur(3px)" },
+        { opacity: 0, transform: "translate3d(0,14px,0) scale(.997)", filter: "blur(5px)" },
         { opacity: 1, transform: "translate3d(0,0,0)", filter: "blur(0)" }
       ],
-      { duration: 620, delay: 30 + index * 48, easing: "cubic-bezier(.22,1,.36,1)", fill: "both" }
+      { duration: 720, delay: 36 + index * 56, easing: "cubic-bezier(.22,1,.36,1)", fill: "both" }
     );
   });
 }
@@ -173,7 +195,6 @@ if (finePointer && !reduceMotion) {
     currentY += (targetY - currentY) * .16;
     body.style.setProperty("--mx", `${currentX}px`);
     body.style.setProperty("--my", `${currentY}px`);
-    halo.style.transform = `translate3d(${currentX - halo.offsetWidth / 2}px,${currentY - halo.offsetHeight / 2}px,0)`;
     if (Math.abs(targetX - currentX) + Math.abs(targetY - currentY) > .3) {
       spotlightFrame = requestAnimationFrame(renderPointer);
     } else {
