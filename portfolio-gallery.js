@@ -227,7 +227,6 @@
     if (entry.layout === "triptych") {
       const stage = document.createElement("div");
       stage.className = "workroom-scroll triptych-scroll";
-      stage.dataset.panelCount = String(entry.srcs.length);
       const triptych = document.createElement("div");
       triptych.className = "glass-triptych";
       entry.srcs.forEach((source, index) => {
@@ -276,10 +275,10 @@
       title.textContent = entry.title;
       format.textContent = entry.subtitle ? `${entry.format} · ${entry.subtitle}` : entry.format;
       counter.textContent = entry.layout === "triptych" && compactRoom
-        ? `01 / ${pad(entry.srcs.length)}`
+        ? `${pad(entry.srcs.length)} 幅作品`
         : `${pad(currentIndex + 1)} / ${pad(entries.length)}`;
-      prevButton?.setAttribute("aria-label", entry.layout === "triptych" ? "上一张作品" : "上一件作品");
-      nextButton?.setAttribute("aria-label", entry.layout === "triptych" ? "下一张作品" : "下一件作品");
+      prevButton?.setAttribute("aria-label", "上一件作品");
+      nextButton?.setAttribute("aria-label", "下一件作品");
       if (sourceLink) {
         sourceLink.hidden = true;
       }
