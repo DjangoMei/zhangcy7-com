@@ -1189,48 +1189,56 @@ img { display: block; max-width: 100%; }
   z-index: 900;
   width: clamp(72px, 6.8vw, 100px);
   aspect-ratio: 1;
-  border: 1px solid rgba(255,255,255,.1);
+  border: 0;
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
   transform: translate3d(-50%,-50%,0);
   background:radial-gradient(
     circle at 50% 50%,
-    rgba(255,255,255,.19) 0%,
-    rgba(247,244,248,.175) 12%,
-    rgba(213,205,218,.135) 27%,
-    rgba(181,179,184,.1) 42%,
-    rgba(157,170,161,.068) 57%,
-    rgba(132,153,140,.036) 72%,
-    rgba(114,139,123,.012) 86%,
+    rgba(246,243,248,.17) 0%,
+    rgba(236,232,240,.153) 10%,
+    rgba(224,220,230,.136) 20%,
+    rgba(211,209,218,.119) 30%,
+    rgba(198,200,205,.102) 40%,
+    rgba(185,192,190,.085) 50%,
+    rgba(171,184,176,.068) 60%,
+    rgba(157,175,164,.051) 70%,
+    rgba(143,164,151,.034) 80%,
+    rgba(128,151,137,.017) 90%,
     transparent 100%
   );
-  box-shadow:0 0 48px rgba(114,139,123,.1),inset 0 0 30px rgba(255,255,255,.075);
-  backdrop-filter:blur(3.6px) saturate(1.025);
-  -webkit-backdrop-filter:blur(3.6px) saturate(1.025);
-  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 0%,rgba(0,0,0,.96) 46%,rgba(0,0,0,.76) 64%,rgba(0,0,0,.42) 79%,rgba(0,0,0,.12) 91%,transparent 100%);
-  mask-image:radial-gradient(circle at 50% 50%,#000 0%,rgba(0,0,0,.96) 46%,rgba(0,0,0,.76) 64%,rgba(0,0,0,.42) 79%,rgba(0,0,0,.12) 91%,transparent 100%);
+  box-shadow:none;
+  filter:blur(10px);
+  backdrop-filter:blur(2.8px) saturate(1.015);
+  -webkit-backdrop-filter:blur(2.8px) saturate(1.015);
+  -webkit-mask-image:none;
+  mask-image:none;
   will-change:top,left,width,opacity;
   transition:width .46s var(--luxury-ease),opacity .28s ease,background .46s var(--luxury-ease),box-shadow .46s var(--luxury-ease),backdrop-filter .46s var(--luxury-ease);
 }
 .cursor-halo.is-visible { opacity: .64; }
 .cursor-halo.is-active {
   width:clamp(96px,8.6vw,126px);
-  border-color:rgba(255,255,255,.14);
+  border-color:transparent;
   background:radial-gradient(
     circle at 50% 50%,
-    rgba(255,255,255,.245) 0%,
-    rgba(244,239,247,.22) 12%,
-    rgba(207,197,214,.17) 28%,
-    rgba(179,177,184,.125) 44%,
-    rgba(154,169,159,.085) 60%,
-    rgba(130,151,137,.042) 76%,
-    rgba(114,139,123,.014) 89%,
+    rgba(247,243,249,.22) 0%,
+    rgba(237,232,242,.198) 10%,
+    rgba(225,220,232,.176) 20%,
+    rgba(212,209,220,.154) 30%,
+    rgba(199,200,207,.132) 40%,
+    rgba(185,192,191,.11) 50%,
+    rgba(171,184,177,.088) 60%,
+    rgba(157,174,165,.066) 70%,
+    rgba(143,163,151,.044) 80%,
+    rgba(128,151,137,.022) 90%,
     transparent 100%
   );
-  box-shadow:0 0 58px rgba(114,139,123,.135),inset 0 0 36px rgba(255,255,255,.095);
-  backdrop-filter:blur(4.4px) saturate(1.04);
-  -webkit-backdrop-filter:blur(4.4px) saturate(1.04);
+  box-shadow:none;
+  filter:blur(13px);
+  backdrop-filter:blur(3.2px) saturate(1.025);
+  -webkit-backdrop-filter:blur(3.2px) saturate(1.025);
 }
 
 .page-curtain {
