@@ -14,6 +14,7 @@
   const upButton = room.querySelector("[data-room-up]");
   const downButton = room.querySelector("[data-room-down]");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const compactRoom = window.matchMedia("(max-width: 760px)").matches;
   let entries = [];
   let currentIndex = 0;
   let activeScroller = null;
@@ -148,10 +149,16 @@
       } else if (sourceLink) {
         sourceLink.hidden = true;
       }
+      let activeButton = null;
       list.querySelectorAll("[data-work-index]").forEach((button, buttonIndex) => {
         button.classList.toggle("is-active", buttonIndex === currentIndex);
         button.setAttribute("aria-pressed", String(buttonIndex === currentIndex));
+        if (buttonIndex === currentIndex) activeButton = button;
       });
+      if (compactRoom && activeButton) {
+        const targetLeft = activeButton.offsetLeft - (list.clientWidth - activeButton.offsetWidth) / 2;
+        list.scrollTo({ left: Math.max(0, targetLeft), behavior: reduceMotion ? "auto" : "smooth" });
+      }
       bindScroller(scroller);
       requestAnimationFrame(() => canvas.classList.remove("is-switching"));
     };
@@ -178,6 +185,7 @@
 
   function initialize(data) {
     entries = data;
+    room.classList.toggle("is-single-entry", entries.length <= 1);
     renderList();
     renderEntry(0, { immediate: true });
   }
@@ -186,6 +194,27 @@
   nextButton?.addEventListener("click", () => renderEntry(currentIndex + 1));
   upButton?.addEventListener("click", () => activeScroller?.scrollBy({ top: -activeScroller.clientHeight * .78, behavior: reduceMotion ? "auto" : "smooth" }));
   downButton?.addEventListener("click", () => activeScroller?.scrollBy({ top: activeScroller.clientHeight * .78, behavior: reduceMotion ? "auto" : "smooth" }));
+
+  let swipeStart = null;
+  canvas.addEventListener("pointerdown", (event) => {
+    if (!compactRoom) return;
+    swipeStart = { x: event.clientX, y: event.clientY };
+  }, { passive: true });
+  canvas.addEventListener("pointercancel", () => { swipeStart = null; }, { passive: true });
+  canvas.addEventListener("pointerup", (event) => {
+    if (!swipeStart) return;
+    const deltaX = event.clientX - swipeStart.x;
+    const deltaY = event.clientY - swipeStart.y;
+    swipeStart = null;
+    if (Math.abs(deltaX) < 44 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
+
+    if (entries.length <= 1) {
+      const chapterLink = document.querySelector(deltaX < 0 ? ".hierarchy-next" : ".hierarchy-parent");
+      chapterLink?.click();
+      return;
+    }
+    renderEntry(currentIndex + (deltaX < 0 ? 1 : -1));
+  }, { passive: true });
 
   room.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") renderEntry(currentIndex - 1);

@@ -160,6 +160,36 @@ routes.forEach(([href, label]) => {
 });
 body.append(rail);
 
+const routeLabels = Object.fromEntries([
+  ...routes,
+  ["video.html", "视频作品"]
+]);
+const nextRoute = body.dataset.next || null;
+if (semanticParent) {
+  const hierarchyDock = document.createElement("nav");
+  hierarchyDock.className = "hierarchy-dock";
+  hierarchyDock.setAttribute("aria-label", "页面层级与顺序导航");
+
+  const parentLink = document.createElement("a");
+  parentLink.href = semanticParent;
+  parentLink.className = "hierarchy-parent";
+  parentLink.setAttribute("aria-label", `返回上一级：${routeLabels[semanticParent] || "上一层"}`);
+  parentLink.textContent = `↑ 上一级 · ${routeLabels[semanticParent] || "上一层"}`;
+  hierarchyDock.append(parentLink);
+
+  if (nextRoute) {
+    const nextLink = document.createElement("a");
+    nextLink.href = nextRoute;
+    nextLink.className = "hierarchy-next";
+    nextLink.setAttribute("aria-label", `前往下一页：${routeLabels[nextRoute] || "下一页"}`);
+    nextLink.textContent = `下一页 · ${routeLabels[nextRoute] || "继续"} →`;
+    hierarchyDock.append(nextLink);
+  }
+
+  body.classList.add("has-hierarchy-dock");
+  body.append(hierarchyDock);
+}
+
 function revealPage() {
   if (reduceMotion) return;
   const selectors = body.classList.contains("page-home")
