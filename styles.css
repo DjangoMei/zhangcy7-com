@@ -4093,21 +4093,30 @@ a.project-tile:hover .project-tile-arrow { transform: rotate(45deg); }
     object-fit:contain;
   }
 
-  /* Every dark mobile control keeps a high-contrast white label. */
+  /* Mobile controls always bind foreground and background as one contrast pair. */
+  .folio-nav a:not([aria-current="page"]),
+  .work-type-switcher a:not([aria-current="page"]),
+  .hierarchy-dock a:first-child,
+  .workroom-controls>div:first-child button:first-child,
+  .pdf-viewer-toolbar button:first-child {
+    background:#fff !important;
+    color:#111 !important;
+    -webkit-text-fill-color:#111;
+  }
   .folio-nav a[aria-current="page"],
   .work-type-switcher a[aria-current="page"],
-  .hierarchy-dock a:last-child,
-  .workroom-controls button:last-child,
-  .next-chapter,
-  .portfolio-module.is-active {
+  .hierarchy-dock a:last-child:not(:first-child),
+  .workroom-controls>div:first-child button:last-child,
+  .pdf-viewer-toolbar button:last-child {
+    background:#151b18 !important;
     color:#fff !important;
     -webkit-text-fill-color:#fff;
   }
-  .folio-nav a[aria-current="page"] *,
-  .work-type-switcher a[aria-current="page"] *,
-  .hierarchy-dock a:last-child *,
-  .workroom-controls button:last-child *,
-  .next-chapter * {
+  .folio-nav a *,
+  .work-type-switcher a *,
+  .hierarchy-dock a *,
+  .workroom-controls button *,
+  .pdf-viewer-toolbar button * {
     color:inherit !important;
     -webkit-text-fill-color:inherit;
   }
