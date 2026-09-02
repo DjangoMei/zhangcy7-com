@@ -164,6 +164,31 @@ const routeLabels = Object.fromEntries([
   ...routes,
   ["video.html", "视频作品"]
 ]);
+
+if (body.classList.contains("portfolio-gallery-page")) {
+  const workroomHead = document.querySelector(".workroom-head");
+  const workTypeRoutes = [
+    ["portfolio.html", "总览"],
+    ["writing.html", "文字"],
+    ["design-hand.html", "设计"],
+    ["design-ai.html", "AI"],
+    ["other.html", "板绘"]
+  ];
+  if (workroomHead) {
+    const switcher = document.createElement("nav");
+    switcher.className = "work-type-switcher";
+    switcher.setAttribute("aria-label", "切换作品类型");
+    workTypeRoutes.forEach(([href, label]) => {
+      const link = document.createElement("a");
+      link.href = href;
+      link.textContent = label;
+      if (href === currentRoute) link.setAttribute("aria-current", "page");
+      switcher.append(link);
+    });
+    workroomHead.insertBefore(switcher, workroomHead.lastElementChild);
+  }
+}
+
 const nextRoute = body.dataset.next || null;
 if (semanticParent) {
   const hierarchyDock = document.createElement("nav");

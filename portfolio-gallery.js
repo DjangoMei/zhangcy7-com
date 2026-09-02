@@ -15,9 +15,16 @@
   const downButton = room.querySelector("[data-room-down]");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const compactRoom = window.matchMedia("(max-width: 760px)").matches;
+  const PDFJS_VERSION = "5.4.530";
+  const PDFJS_MODULE = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VERSION}/build/pdf.min.mjs`;
+  const PDFJS_WORKER = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.mjs`;
   let entries = [];
   let currentIndex = 0;
   let activeScroller = null;
+  let activePanelIndex = 0;
+  let activePanelCount = 0;
+  let renderToken = 0;
+  let pdfJsPromise = null;
 
   const pad = (value) => String(value).padStart(2, "0");
 
@@ -37,8 +44,18 @@
   }
 
   function updateProgress() {
-    if (!activeScroller || activeScroller.classList.contains("is-pdf")) {
+    if (!activeScroller) {
       progress.style.transform = "scaleX(1)";
+      return;
+    }
+    if (activeScroller.classList.contains("is-pdf")) {
+      const current = Number(activeScroller.dataset.pdfPage || 1);
+      const total = Number(activeScroller.dataset.pdfPages || 1);
+      progress.style.transform = `scaleX(${Math.max(.04, current / total)})`;
+      return;
+    }
+    if (activePanelCount > 1) {
+      progress.style.transform = `scaleX(${(activePanelIndex + 1) / activePanelCount})`;
       return;
     }
     const range = activeScroller.scrollHeight - activeScroller.clientHeight;
@@ -49,8 +66,116 @@
   function bindScroller(scroller) {
     activeScroller?.removeEventListener("scroll", updateProgress);
     activeScroller = scroller;
+    activePanelIndex = 0;
+    activePanelCount = Number(activeScroller?.dataset.panelCount || 0);
     activeScroller?.addEventListener("scroll", updateProgress, { passive: true });
     updateProgress();
+  }
+
+  function loadPdfJs() {
+    if (!pdfJsPromise) {
+      pdfJsPromise = import(PDFJS_MODULE).then((pdfjsLib) => {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+        return pdfjsLib;
+      });
+    }
+    return pdfJsPromise;
+  }
+
+  async function mountPdfViewer(scroller, entry, token) {
+    const toolbar = scroller.querySelector(".pdf-viewer-toolbar");
+    const stage = scroller.querySelector(".pdf-page-stage");
+    const canvasElement = scroller.querySelector("canvas");
+    const status = scroller.querySelector("[data-pdf-status]");
+    const previous = scroller.querySelector("[data-pdf-prev]");
+    const next = scroller.querySelector("[data-pdf-next]");
+    let documentHandle = null;
+    let pageNumber = 1;
+    let drawing = false;
+    let queuedPage = null;
+
+    const showFailure = () => {
+      stage.replaceChildren();
+      const fallback = document.createElement("div");
+      fallback.className = "pdf-viewer-error";
+      fallback.innerHTML = "<strong>课件暂时未能渲染</strong><span>请检查网络后点击重试。</span>";
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.textContent = "重新载入";
+      retry.addEventListener("click", () => window.location.reload());
+      fallback.append(retry);
+      stage.append(fallback);
+      status.textContent = "载入失败";
+      previous.disabled = true;
+      next.disabled = true;
+    };
+
+    const renderPage = async (requestedPage) => {
+      if (!documentHandle || token !== renderToken) return;
+      const safePage = Math.max(1, Math.min(documentHandle.numPages, requestedPage));
+      if (drawing) {
+        queuedPage = safePage;
+        return;
+      }
+      drawing = true;
+      pageNumber = safePage;
+      scroller.dataset.pdfPage = String(pageNumber);
+      status.textContent = `${pad(pageNumber)} / ${pad(documentHandle.numPages)}`;
+      previous.disabled = pageNumber <= 1;
+      next.disabled = pageNumber >= documentHandle.numPages;
+      updateProgress();
+      try {
+        const page = await documentHandle.getPage(pageNumber);
+        if (token !== renderToken) return;
+        const baseViewport = page.getViewport({ scale: 1 });
+        const availableWidth = Math.max(220, stage.clientWidth - 24);
+        const availableHeight = Math.max(260, stage.clientHeight - 20);
+        const fitScale = Math.min(availableWidth / baseViewport.width, availableHeight / baseViewport.height);
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.75);
+        const renderViewport = page.getViewport({ scale: fitScale * pixelRatio });
+        const displayViewport = page.getViewport({ scale: fitScale });
+        canvasElement.width = Math.floor(renderViewport.width);
+        canvasElement.height = Math.floor(renderViewport.height);
+        canvasElement.style.width = `${Math.floor(displayViewport.width)}px`;
+        canvasElement.style.height = `${Math.floor(displayViewport.height)}px`;
+        const context = canvasElement.getContext("2d", { alpha: false });
+        await page.render({ canvasContext: context, viewport: renderViewport }).promise;
+      } catch {
+        if (token === renderToken) showFailure();
+      } finally {
+        drawing = false;
+        if (queuedPage !== null && queuedPage !== pageNumber) {
+          const nextQueuedPage = queuedPage;
+          queuedPage = null;
+          renderPage(nextQueuedPage);
+        } else {
+          queuedPage = null;
+        }
+      }
+    };
+
+    scroller.pdfNavigate = (delta) => renderPage(pageNumber + delta);
+    previous.addEventListener("click", () => scroller.pdfNavigate(-1));
+    next.addEventListener("click", () => scroller.pdfNavigate(1));
+
+    try {
+      const pdfjsLib = await loadPdfJs();
+      if (token !== renderToken) return;
+      documentHandle = await pdfjsLib.getDocument({ url: entry.download }).promise;
+      if (token !== renderToken) return;
+      scroller.dataset.pdfPages = String(documentHandle.numPages);
+      toolbar.hidden = false;
+      await renderPage(1);
+      let resizeTimer = 0;
+      const resizeObserver = new ResizeObserver(() => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => renderPage(pageNumber), 120);
+      });
+      resizeObserver.observe(stage);
+      scroller.pdfCleanup = () => resizeObserver.disconnect();
+    } catch {
+      if (token === renderToken) showFailure();
+    }
   }
 
   function buildWritingPanel(entry) {
@@ -59,12 +184,16 @@
 
     if (entry.format === "PDF") {
       scroller.classList.add("is-pdf");
-      const frame = document.createElement("iframe");
-      frame.className = "writing-pdf-frame";
-      frame.src = `${entry.download}#toolbar=0&navpanes=0&view=Fit`;
-      frame.title = `${entry.title} PDF 滚动预览`;
-      frame.loading = "eager";
-      scroller.append(frame);
+      scroller.innerHTML = `
+        <div class="pdf-viewer-toolbar" hidden>
+          <button type="button" data-pdf-prev aria-label="上一页课件">← 上一页</button>
+          <strong data-pdf-status>载入中…</strong>
+          <button type="button" data-pdf-next aria-label="下一页课件">下一页 →</button>
+        </div>
+        <div class="pdf-page-stage" aria-live="polite">
+          <canvas aria-label="${entry.title} 课件页面"></canvas>
+          <p class="pdf-viewer-loading">正在载入课件…</p>
+        </div>`;
       return scroller;
     }
 
@@ -98,10 +227,12 @@
     if (entry.layout === "triptych") {
       const stage = document.createElement("div");
       stage.className = "workroom-scroll triptych-scroll";
+      stage.dataset.panelCount = String(entry.srcs.length);
       const triptych = document.createElement("div");
       triptych.className = "glass-triptych";
       entry.srcs.forEach((source, index) => {
         const figure = document.createElement("figure");
+        figure.dataset.panelIndex = String(index);
         const image = document.createElement("img");
         image.src = source;
         image.alt = `${entry.title} ${pad(index + 1)}`;
@@ -138,15 +269,18 @@
     const entry = entries[currentIndex];
     const show = () => {
       const scroller = room.dataset.workroom === "writing" ? buildWritingPanel(entry) : buildImagePanel(entry);
+      activeScroller?.pdfCleanup?.();
+      renderToken += 1;
+      const token = renderToken;
       canvas.replaceChildren(scroller);
       title.textContent = entry.title;
       format.textContent = entry.subtitle ? `${entry.format} · ${entry.subtitle}` : entry.format;
-      counter.textContent = `${pad(currentIndex + 1)} / ${pad(entries.length)}`;
-      if (sourceLink && entry.download) {
-        sourceLink.href = entry.download;
-        sourceLink.hidden = false;
-        sourceLink.textContent = entry.format === "PDF" ? "打开 PDF ↗" : "下载原稿 ↓";
-      } else if (sourceLink) {
+      counter.textContent = entry.layout === "triptych" && compactRoom
+        ? `01 / ${pad(entry.srcs.length)}`
+        : `${pad(currentIndex + 1)} / ${pad(entries.length)}`;
+      prevButton?.setAttribute("aria-label", entry.layout === "triptych" ? "上一张作品" : "上一件作品");
+      nextButton?.setAttribute("aria-label", entry.layout === "triptych" ? "下一张作品" : "下一件作品");
+      if (sourceLink) {
         sourceLink.hidden = true;
       }
       let activeButton = null;
@@ -160,6 +294,7 @@
         list.scrollTo({ left: Math.max(0, targetLeft), behavior: reduceMotion ? "auto" : "smooth" });
       }
       bindScroller(scroller);
+      if (entry.format === "PDF") mountPdfViewer(scroller, entry, token);
       requestAnimationFrame(() => canvas.classList.remove("is-switching"));
     };
 
@@ -190,10 +325,29 @@
     renderEntry(0, { immediate: true });
   }
 
-  prevButton?.addEventListener("click", () => renderEntry(currentIndex - 1));
-  nextButton?.addEventListener("click", () => renderEntry(currentIndex + 1));
-  upButton?.addEventListener("click", () => activeScroller?.scrollBy({ top: -activeScroller.clientHeight * .78, behavior: reduceMotion ? "auto" : "smooth" }));
-  downButton?.addEventListener("click", () => activeScroller?.scrollBy({ top: activeScroller.clientHeight * .78, behavior: reduceMotion ? "auto" : "smooth" }));
+  function navigatePanel(delta) {
+    if (!activeScroller || activePanelCount <= 1) return false;
+    activePanelIndex = Math.max(0, Math.min(activePanelCount - 1, activePanelIndex + delta));
+    activeScroller.scrollTo({ left: activeScroller.clientWidth * activePanelIndex, behavior: reduceMotion ? "auto" : "smooth" });
+    counter.textContent = `${pad(activePanelIndex + 1)} / ${pad(activePanelCount)}`;
+    updateProgress();
+    return true;
+  }
+
+  prevButton?.addEventListener("click", () => {
+    if (!navigatePanel(-1)) renderEntry(currentIndex - 1);
+  });
+  nextButton?.addEventListener("click", () => {
+    if (!navigatePanel(1)) renderEntry(currentIndex + 1);
+  });
+  upButton?.addEventListener("click", () => {
+    if (activeScroller?.pdfNavigate) activeScroller.pdfNavigate(-1);
+    else activeScroller?.scrollBy({ top: -activeScroller.clientHeight * .78, behavior: reduceMotion ? "auto" : "smooth" });
+  });
+  downButton?.addEventListener("click", () => {
+    if (activeScroller?.pdfNavigate) activeScroller.pdfNavigate(1);
+    else activeScroller?.scrollBy({ top: activeScroller.clientHeight * .78, behavior: reduceMotion ? "auto" : "smooth" });
+  });
 
   let swipeStart = null;
   canvas.addEventListener("pointerdown", (event) => {
@@ -208,11 +362,15 @@
     swipeStart = null;
     if (Math.abs(deltaX) < 44 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
 
-    if (entries.length <= 1) {
-      const chapterLink = document.querySelector(deltaX < 0 ? ".hierarchy-next" : ".hierarchy-parent");
-      chapterLink?.click();
+    if (activeScroller?.pdfNavigate) {
+      activeScroller.pdfNavigate(deltaX < 0 ? 1 : -1);
       return;
     }
+    if (activePanelCount > 1) {
+      navigatePanel(deltaX < 0 ? 1 : -1);
+      return;
+    }
+    if (entries.length <= 1) return;
     renderEntry(currentIndex + (deltaX < 0 ? 1 : -1));
   }, { passive: true });
 
